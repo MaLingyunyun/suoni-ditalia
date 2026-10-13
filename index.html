@@ -926,9 +926,9 @@ function bumpStreak(){
   const t = today(); if (P.streak.last === t) return;
   const last = P.streak.last, y = addDays(t,-1);
   if (last === y) P.streak.count++;
-  else if (last && (P.scudo || 0) > 0 && daysBetween(last, t) - 1 <= P.scudo){
-    const miss = daysBetween(last, t) - 1; P.scudo -= miss; P.streak.count++;
-    toast(`用掉保护罩：漏了 ${miss} 天，${P.streak.count} 天的连续记录保住了。`, 'shield');
+  else if (last && daysBetween(last, t) - 1 <= (P.scudo || 0)){
+    const miss = daysBetween(last, t) - 1; P.streak.count++;
+    toast(`保护罩护住了：漏了 ${miss} 天，${P.streak.count} 天的连续记录还在。保护罩不会减少。`, 'shield');
   } else P.streak.count = 1;
   P.streak.last = t; P.streak.best = Math.max(P.streak.best || 0, P.streak.count);
   const bonus = ECON.streak[P.streak.count];
@@ -938,7 +938,7 @@ function bumpStreak(){
 function streakNow(){
   const t = today(), last = P.streak.last;
   if (last === t || last === addDays(t,-1)) return P.streak.count;
-  if (last && (P.scudo || 0) > 0 && daysBetween(last, t) - 1 <= P.scudo) return P.streak.count;
+  if (last && daysBetween(last, t) - 1 <= (P.scudo || 0)) return P.streak.count;
   return 0;
 }
 function xpToday(){ return P.daily.date === today() ? P.daily.xp : 0; }
@@ -1088,7 +1088,7 @@ function announce(msg){ const l = $('#live'); l.textContent = ''; setTimeout(()=
 const ECON = {
   step:{c:3,e:4}, lesson:{c:15,e:10}, stars3:{c:10,e:5}, review:{c:10,e:8}, practice:{c:5,e:4}, goal:{c:15,e:10},
   city:25, gift:20, perfect:15, streak:{3:30, 7:60, 14:100, 30:200, 60:300, 100:500},
-  eggNeed:[100,200,300,400,500], eggPrice:[0,300,450,600,750], scudoPrice:120, scudoMax:3, luceNeed:3
+  eggNeed:[100,200,300,400,500], eggPrice:[0,300,450,600,750], scudoPrice:120, scudoMax:7, luceNeed:3
 };
 const BOND_TH = [0,40,120,260,480];
 const BOND_NAMES = [['Sconosciuti','陌生'],['Conoscenti','认识'],['Amici','朋友'],['Grandi amici','好朋友'],['Inseparabili','形影不离']];
@@ -1519,7 +1519,7 @@ function nestSection(cur){
       h('div', {class:'nest-actions'},
         h('button', {class:'btn btn-sm', onclick:() => openFeedSheet(p)}, icon('bag'), '喂零食'),
         h('button', {class:'btn btn-sm' + ((P.luce || 0) >= ECON.luceNeed && (P.scudo || 0) < ECON.scudoMax ? ' btn-primary' : ''), onclick:() => castPatronus(p), disabled:(P.luce || 0) < ECON.luceNeed || (P.scudo || 0) >= ECON.scudoMax, title:'需要 3 点光'}, icon('sparkle'), 'Expecto Patronum'),
-        h('span', {class:'chip', title:'保护罩：漏掉一天时自动用掉一个，连续天数不断'}, icon('shield'), String(P.scudo || 0)), luce));
+        h('span', {class:'chip', title:'保护罩永久有效，不会减少：有几个，就算连续漏掉几天，连续天数也不断'}, icon('shield'), String(P.scudo || 0)), luce));
   } else if (P.egg){
     const pct = Math.round(100 * P.egg.progress / P.egg.need);
     bar.append(h('div', {class:'who'}, h('b', {}, `${FOLLETTI[P.egg.k].en}之箱`), h('small', {}, `它在熟悉你 · ${P.egg.progress} / ${P.egg.need}`), h('div', {class:'meter'}, h('span', {style:`width:${pct}%`}))),
@@ -1594,7 +1594,7 @@ function renderZaino(keep){
     sec('Snack · 零食', null, h('div', {class:'list'}, snackRows)),
     sec('Accessori · 配饰', null, h('div', {class:'list'}, accRows)),
     sec('Casetta · 小窝装饰', null, h('div', {class:'list'}, decRows)),
-    sec('Utili · 实用', null, h('div', {class:'list'}, h('div', {class:'row'}, icon('shield'), h('span', {class:'grow'}, h('b', {}, `保护罩 × ${P.scudo || 0}`), h('small', {}, '漏掉一天时自动用掉一个，连续天数不断。')), h('button', {class:'btn btn-sm', onclick:() => renderShop('utili')}, '去买')),
+    sec('Utili · 实用', null, h('div', {class:'list'}, h('div', {class:'row'}, icon('shield'), h('span', {class:'grow'}, h('b', {}, `保护罩 × ${P.scudo || 0}`), h('small', {}, (P.scudo || 0) ? `永久有效，不会减少：就算连续漏掉 ${P.scudo} 天，连续天数也不断。最多 ${ECON.scudoMax} 个。` : `永久有效，不会减少：有几个，就算连续漏掉几天，连续天数也不断。最多 ${ECON.scudoMax} 个。`)), h('button', {class:'btn btn-sm', onclick:() => renderShop('utili')}, '去买')),
       h('div', {class:'row'}, icon('sparkle'), h('span', {class:'grow'}, h('b', {}, `光 ${Math.min(3, P.luce || 0)} / 3`), h('small', {}, '每个完美的一天得 1 点。攒满 3 点，猫猫就能施展呼神护卫变出保护罩。'))))),
     h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:() => renderShop()}, icon('bag'), 'Negozio · 商店'), h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Album · 猫猫相册'))];
   if (keep && SCREEN === 'zaino') VIEW.replaceChildren(...nodes); else setView('zaino', ...nodes);
@@ -1640,7 +1640,7 @@ function castPatronus(p){
     setTimeout(() => { ring.remove(); Compagno.refresh(); }, 1600);
   } else Compagno.refresh();
   Compagno.mood('cheer', 1500);
-  Compagno.say({it:'Expecto Patronum!', en:'一层光做的保护罩。漏掉一天也没关系，连续天数不会断。'}, 6000, true);
+  Compagno.say({it:'Expecto Patronum!', en:`一层光做的保护罩，永远不会消失。现在就算连续漏掉 ${P.scudo} 天，连续天数也不会断。`}, 6000, true);
   const old = $('.nest'); if (old) old.replaceWith(nestSection(currentLevel()));
   toast('+1 保护罩 · 连续天数有保护了', 'shield');
 }
@@ -1783,7 +1783,7 @@ function renderShop(tab){
           : h('button', {class:'btn btn-sm', onclick:() => buy(price, () => { P.decor.push(k); toast(`${d.it}：摆进小窝了。`, 'bag'); })}, '买'))); });
   } else {
     const full = (P.scudo || 0) >= ECON.scudoMax;
-    grid.append(h('div', {class:'item'}, h('div', {class:'pic'}, icon('shield')), h('b', {}, 'Scudo · 保护罩'), h('small', {}, `漏掉一天时自动用掉一个，连续天数不断。现在有 ${P.scudo || 0} 个，最多 ${ECON.scudoMax} 个。攒满 3 点光，猫猫也能用呼神护卫变出一个。`),
+    grid.append(h('div', {class:'item'}, h('div', {class:'pic'}, icon('shield')), h('b', {}, 'Scudo · 保护罩'), h('small', {}, `永久有效，不会用掉、不会减少：有几个，就算连续漏掉几天，连续天数也不断。现在有 ${P.scudo || 0} 个，最多 ${ECON.scudoMax} 个。攒满 3 点光，猫猫也能用呼神护卫变出一个。`),
       h('span', {class:'price'}, icon('coin'), String(ECON.scudoPrice)), h('button', {class:'btn btn-sm', disabled:full, onclick:() => buy(ECON.scudoPrice, () => { P.scudo = (P.scudo || 0) + 1; Compagno.refresh(); toast('+1 保护罩', 'shield'); })}, full ? '已满' : '买')));
   }
   setView('shop',
@@ -1815,7 +1815,7 @@ function renderQuests(){
     h('h2', {class:'section-title'}, 'Questa settimana · 本周'),
     h('div', {class:'list'}, w.list.map(q => qEl(q, WEEKLY_POOL[q.id]))),
     h('h2', {class:'section-title'}, '光与呼神护卫'),
-    h('p', {class:'muted', style:'margin:0'}, `你有 ${P.luce || 0} 点光、${P.scudo || 0} 个保护罩。攒满 3 点光，猫猫就能在首页施展呼神护卫（Expecto Patronum），变出一个保护罩：漏掉一天时，连续天数不会断。`),
+    h('p', {class:'muted', style:'margin:0'}, `你有 ${P.luce || 0} 点光、${P.scudo || 0} 个保护罩。攒满 3 点光，猫猫就能在首页施展呼神护卫（Expecto Patronum），变出一个保护罩。保护罩永久有效、不会减少：有几个，就算连续漏掉几天，连续天数也不断。`),
     h('h2', {class:'section-title'}, 'Traguardi · 里程碑'),
     h('div', {class:'list'}, ms));
 }
@@ -1991,7 +1991,7 @@ function renderTopbar(){
   $('#topbar').replaceChildren(h('div', {class:'topbar-in'},
     h('button', {class:'brand', onclick:renderHome, 'aria-label':"Suoni d'Italia，回到旅程"}, h('span', {}, 'Suoni d', h('span', {class:'apos'}, '’'), 'Italia')),
     h('div', {class:'chips'},
-      h('span', {class:'chip', title:(P.scudo || 0) ? `连续天数 · ${P.scudo} 个保护罩` : '连续天数'}, icon('flame'), String(st), h('span', {class:'sr-only'}, ' 天连续'),
+      h('span', {class:'chip', title:(P.scudo || 0) ? `连续天数 · ${P.scudo} 个保护罩，永久有效：连续漏掉 ${P.scudo} 天以内都不会断` : '连续天数'}, icon('flame'), String(st), h('span', {class:'sr-only'}, ' 天连续'),
         (P.scudo || 0) ? h('span', {class:'mini', 'aria-label':`${P.scudo} 个保护罩`}, icon('shield'), String(P.scudo)) : null),
       h('span', {class:'chip xp', title:'今日 XP 和每日目标'}, ring(xp / S.goal), `${xp}/${S.goal}`, h('span', {class:'sr-only'}, ' 今日 XP')),
       h('button', {class:'chip coins', title:'金币。点击打开商店', onclick:() => renderShop()}, icon('coin'), String(P.coins || 0), h('span', {class:'sr-only'}, ' 金币，打开商店')),
@@ -2696,7 +2696,7 @@ function renderMethod(){
       h('h2', {}, '一个现实的计划'),
       h('p', {}, '每天一座城市或一次复习，10 到 15 分钟。十二座城市需要两到四周。听力训练到 400 分钟左右进步会趋于平稳，大约是一个月的每日练习，首页的"听力训练"进度条跟踪这个目标。'),
       h('h2', {}, '你的猫'),
-      h('p', {}, '在商店领一个纸箱，里面有一只小猫，一直在屏幕右下角陪你。课里的每一步、每次复习和每个任务都会赚金币、让它更信任你；金币只来自学习，所以商店就是你努力的镜子。猫永远是小猫，长大的是你们的感情，以及它会对你说的意大利语句子：那些句子只用你已经学过的发音。三个完美的一天攒够光，它就能施展呼神护卫，变出一个保护罩：漏掉一天时，连续天数不会断。'),
+      h('p', {}, '在商店领一个纸箱，里面有一只小猫，一直在屏幕右下角陪你。课里的每一步、每次复习和每个任务都会赚金币、让它更信任你；金币只来自学习，所以商店就是你努力的镜子。猫永远是小猫，长大的是你们的感情，以及它会对你说的意大利语句子：那些句子只用你已经学过的发音。三个完美的一天攒够光，它就能施展呼神护卫，变出一个保护罩。保护罩永久有效、不会减少：有几个，就算连续漏掉几天，连续天数也不断。'),
       h('h2', {}, '颜色约定'),
       h('div', {class:'legend'}, wordEl('ca-sa'), wordEl('cia-o', {focus:/c[ei]/})),
       h('p', {}, '红色是元音，蓝色是辅音，灰色不发音。带下划线的音节是重音。黄色高亮是这一课正在练的发音。'),
