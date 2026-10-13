@@ -1,0 +1,1592 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Italian phonics trainer: 12 cities, one group of sounds each.">
+<title>Suoni d'Italia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Caveat:wght@500..700&family=Lexend:wght@300..700&display=swap">
+<style>
+[hidden]{display:none!important}
+img{max-width:100%}
+/* Layout: an Italian squared school notebook (quaderno a quadretti); one centered column; a winding road of passport stamps, one per city */
+:root{
+  --paper:#F5F8FC; --grid:#DEE6F1; --card:#FFFFFF; --ink:#15223D; --muted:#56637E; --line:#C8D3E3;
+  --blue:#2140AE; --blue-soft:#E3E9FB; --vowel:#CF3A2A; --silent:#9AA4B9;
+  --lemon:#F4C430; --lemon-soft:#FFF0BC; --lemon-ink:#352700; --lemon-deep:#BF9008;
+  --good:#1D8350; --good-soft:#DCF2E5; --bad:#B4322A; --bad-soft:#FBE3E0;
+  --sea-1:#D3E6FA; --sea-2:#A3C7EE; --bean-1:#E8C79B; --bean-2:#A8743F; --spark:#FFFFFF;
+  --scrim:rgba(10,16,30,.45); --shadow:rgba(21,34,61,.10);
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Lexend","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-hand:"Caveat","Segoe Print","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1424; --grid:#17213A; --card:#141E34; --ink:#E7ECF6; --muted:#9CA8C1; --line:#2A3858;
+    --blue:#93AAFF; --blue-soft:#1B2752; --vowel:#FF8272; --silent:#5F6B88;
+    --lemon:#F4C430; --lemon-soft:#3A3011; --lemon-ink:#2A1F00; --lemon-deep:#E0B321;
+    --good:#4FC58B; --good-soft:#0F2E20; --bad:#FF8273; --bad-soft:#3A1816;
+    --sea-1:#12305A; --sea-2:#0A1C38; --bean-1:#D9B482; --bean-2:#8E5D2D; --spark:#FFFFFF;
+    --scrim:rgba(0,0,0,.6); --shadow:rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1424; --grid:#17213A; --card:#141E34; --ink:#E7ECF6; --muted:#9CA8C1; --line:#2A3858;
+  --blue:#93AAFF; --blue-soft:#1B2752; --vowel:#FF8272; --silent:#5F6B88;
+  --lemon:#F4C430; --lemon-soft:#3A3011; --lemon-ink:#2A1F00; --lemon-deep:#E0B321;
+  --good:#4FC58B; --good-soft:#0F2E20; --bad:#FF8273; --bad-soft:#3A1816;
+  --sea-1:#12305A; --sea-2:#0A1C38; --bean-1:#D9B482; --bean-2:#8E5D2D; --spark:#FFFFFF;
+  --scrim:rgba(0,0,0,.6); --shadow:rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px; font:400 16px/1.55 var(--font-body); -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+button:disabled{cursor:default}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:8px}
+a{color:var(--blue)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.wrap{max-width:660px;margin:0 auto;padding-inline:16px;padding-block:8px 72px;outline:none}
+
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1.5px solid var(--line)}
+.topbar-in{max-width:660px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:8px}
+.brand{display:flex;align-items:center;gap:8px;background:none;border:0;padding:2px;font:800 1.2rem/1 var(--font-display);letter-spacing:-.01em;color:var(--ink);min-width:0}
+.brand .apos{color:var(--vowel)}
+.chips{margin-left:auto;display:flex;gap:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font:600 .8rem/1 var(--font-body);font-variant-numeric:tabular-nums;white-space:nowrap}
+.iconbtn{width:38px;height:38px;border-radius:11px;border:1.5px solid var(--line);background:var(--card);display:grid;place-items:center;padding:0;flex:none}
+.iconbtn.armed{border-color:var(--bad);color:var(--bad)}
+.ic{display:inline-grid;place-items:center;line-height:0}
+.ic svg{width:1.15em;height:1.15em}
+
+/* type */
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0}
+.eyebrow{font:600 .72rem/1.2 var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.section-title{font:800 1.35rem/1.1 var(--font-display);margin:28px 0 6px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:.8rem 1.15rem;border-radius:13px;border:2px solid var(--ink);background:var(--card);color:var(--ink);font:600 1rem/1.1 var(--font-body);box-shadow:0 3px 0 var(--ink);transition:transform .08s,box-shadow .08s;text-decoration:none}
+.btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{opacity:.45;box-shadow:none}
+.btn-primary{background:var(--lemon);color:var(--lemon-ink);border-color:var(--lemon-deep);box-shadow:0 3px 0 var(--lemon-deep)}
+.btn-primary:active:not(:disabled){box-shadow:0 1px 0 var(--lemon-deep)}
+.btn-good{background:var(--good);color:var(--card);border-color:var(--good);box-shadow:0 3px 0 var(--ink)}
+.btn-ghost{border-color:transparent;box-shadow:none;background:transparent}
+.btn-lg{padding:.9rem 1.3rem;font-size:1.05rem;text-align:left}
+.btn .two{display:grid;gap:3px}
+.btn .two small{font:500 .78rem/1.1 var(--font-body);opacity:.8}
+
+.hero{margin-block:18px 4px}
+.hero .it{font:700 2.1rem/1.05 var(--font-hand);color:var(--blue)}
+.hero .en{color:var(--muted);margin-top:4px;max-width:56ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-block:14px 4px}
+
+.banner{margin-top:14px;border:2px solid var(--bad);background:var(--bad-soft);border-radius:14px;padding:12px 14px;font-size:.92rem}
+.banner b{display:block;margin-bottom:2px}
+
+/* stats strip */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.stat{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;min-width:0}
+.stat .val{font:800 1.45rem/1.1 var(--font-display);font-variant-numeric:tabular-nums;margin-top:4px}
+.stat .val small{font:500 .8rem var(--font-body);color:var(--muted)}
+.meter{height:7px;border-radius:99px;background:var(--line);margin-top:7px;overflow:hidden}
+.meter span{display:block;height:100%;background:var(--good);border-radius:99px}
+
+/* five-step loop */
+.loop{margin-top:22px}
+.loop ol{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;counter-reset:s}
+.loop li{counter-increment:s;display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:8px 12px}
+.loop li::before{content:counter(s);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font:800 .95rem/1 var(--font-display)}
+.loop li b{font-family:var(--font-display);font-size:1.02rem}
+
+/* road */
+.road{position:relative;margin-top:8px}
+.road svg.path{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.road .seg{fill:none;stroke:var(--line);stroke-width:4;stroke-linecap:round;stroke-dasharray:1 10}
+.road .seg.done{stroke:var(--blue);stroke-dasharray:none;stroke-width:3.5;opacity:.75}
+.stop-row{position:relative;height:104px}
+.stop{position:absolute;top:12px;display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;text-align:left;border-radius:14px}
+.stop.flip{flex-direction:row-reverse;text-align:right}
+.stamp{position:relative;width:74px;height:74px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--card);color:var(--blue);border:3px solid var(--blue);transform:rotate(var(--rot,-6deg));font:800 1.55rem/1 var(--font-display)}
+.stamp::after{content:"";position:absolute;inset:5px;border-radius:50%;border:1.5px dashed currentColor;opacity:.65}
+.stamp .tiny{position:absolute;bottom:9px;line-height:0}
+.stamp .tiny .ic svg{width:11px;height:11px}
+.stop.is-done .stamp{background:var(--blue);color:var(--card)}
+.stop.is-current .stamp{background:var(--lemon);color:var(--lemon-ink);border-color:var(--lemon-deep);animation:pulse 2.4s ease-in-out infinite}
+.stop.is-locked .stamp{background:var(--paper);color:var(--silent);border-color:var(--silent);border-style:dashed}
+.stop-label{min-width:0}
+.stop-label b{display:block;font:800 1.08rem/1.1 var(--font-display)}
+.stop-label small{display:block;color:var(--muted);font-size:.82rem;line-height:1.25}
+.stop.is-locked .stop-label b{color:var(--muted)}
+.stars{display:flex;gap:1px;margin-top:4px;color:var(--lemon-deep)}
+.stop.flip .stars{justify-content:flex-end}
+.stars .ic svg{width:14px;height:14px}
+.stars .off{color:var(--line)}
+
+.footer-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.sync{margin-top:12px;font-size:.8rem;color:var(--muted)}
+
+/* diploma */
+.diploma{margin-top:20px;background:var(--card);border:2px solid var(--blue);border-radius:16px;padding:16px;text-align:center;box-shadow:4px 4px 0 var(--blue)}
+.diploma h2{font-size:1.5rem;color:var(--blue)}
+
+/* lesson */
+.lesson-top{display:flex;align-items:center;gap:10px;margin-block:12px 18px;position:relative}
+.progress{flex:1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:5px}
+.progress span{height:10px;border-radius:99px;background:var(--line);overflow:hidden;position:relative}
+.progress span.on{background:var(--good)}
+.progress span.now::after{content:"";position:absolute;inset:0;width:var(--p,4%);background:var(--lemon-deep);border-radius:99px;transition:width .3s}
+.leave-tip{position:absolute;left:46px;top:-2px;font-size:.78rem;color:var(--bad);background:var(--paper);padding:2px 6px;border-radius:6px}
+.step-head{margin-bottom:10px}
+.step-title{font:800 clamp(1.7rem,6.5vw,2.3rem)/1.02 var(--font-display);margin:.3rem 0 .25rem}
+.step-sub{color:var(--muted);margin:0;max-width:56ch}
+
+.player{display:flex;gap:12px;align-items:center;justify-content:center;margin-block:18px 20px}
+.play{width:84px;height:84px;border-radius:50%;border:3px solid var(--ink);background:var(--lemon);color:var(--lemon-ink);box-shadow:0 4px 0 var(--ink);display:grid;place-items:center;padding:0;flex:none}
+.play .ic svg{width:38px;height:38px;margin-left:4px}
+.play:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.play.playing{animation:ring 1s ease-out infinite}
+.slow{display:inline-flex;align-items:center;gap:6px;padding:.5rem .8rem;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font:600 .85rem/1 var(--font-body);color:var(--muted)}
+
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.opt{position:relative;min-width:0;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:24px 10px 20px;font:500 clamp(1.45rem,6vw,1.95rem)/1.1 var(--font-body);box-shadow:0 3px 0 var(--line);overflow-wrap:anywhere}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.k{position:absolute;top:7px;left:9px;font:600 .68rem/1 var(--font-body);color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:2px 5px}
+.opt.good,.bucket.good,.sylbtn.good{border-color:var(--good);background:var(--good-soft);box-shadow:0 3px 0 var(--good)}
+.opt.bad,.bucket.bad,.sylbtn.bad{border-color:var(--bad);background:var(--bad-soft);box-shadow:0 3px 0 var(--bad);animation:shake .35s}
+.opt.dim,.bucket.dim,.sylbtn.dim{opacity:.5}
+.opt:disabled,.bucket:disabled,.sylbtn:disabled{cursor:default}
+
+.feedback{margin-top:16px;border-radius:16px;padding:14px 16px;border:2px solid;display:grid;gap:10px}
+.feedback.good{background:var(--good-soft);border-color:var(--good)}
+.feedback.bad{background:var(--bad-soft);border-color:var(--bad)}
+.fb-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px}
+.fb-head .ic{align-self:center}
+.feedback.good .fb-head{color:var(--good)}
+.feedback.bad .fb-head{color:var(--bad)}
+.fb-head .it{font:700 1.8rem/1 var(--font-hand)}
+.fb-head .en{font-size:.9rem;color:var(--muted)}
+.fb-line{margin:0}
+.fb-actions{display:flex;justify-content:flex-end}
+.feedback.auto .btn{position:relative;overflow:hidden}
+.feedback.auto .btn::after{content:"";position:absolute;left:0;bottom:0;height:3px;background:var(--card);opacity:.8;animation:drain var(--auto,1.6s) linear forwards}
+.compare{display:flex;flex-wrap:wrap;gap:8px}
+.cmp{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);text-align:left}
+.cmp .w{font-size:1.25rem}
+.cmp small{display:block;color:var(--muted);font-size:.78rem}
+.cmp.target{border-color:var(--good)}
+
+/* words */
+.w{letter-spacing:.01em;white-space:nowrap}
+.w .v{color:var(--vowel)}
+.w .c{color:var(--blue)}
+.w .s{color:var(--silent)}
+.w .f{background:var(--lemon-soft);box-shadow:0 0 0 2px var(--lemon-soft);border-radius:3px}
+.w .st{text-decoration:underline;text-decoration-thickness:.08em;text-underline-offset:.2em;text-decoration-color:var(--ink)}
+.w .dot{color:var(--muted);opacity:.6;font-weight:300;margin-inline:.03em}
+.w.plain .v,.w.plain .c,.w.plain .s{color:var(--ink)}
+.gloss{color:var(--muted);font-size:.95rem}
+
+/* learn */
+.card{background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:18px 18px 16px;box-shadow:4px 4px 0 var(--ink)}
+.card h3{font-size:1.45rem;line-height:1.15;margin:.35rem 0 .5rem}
+.card p{margin:0 0 1rem;max-width:62ch}
+.exs{display:flex;flex-wrap:wrap;gap:8px}
+.ex{display:inline-flex;flex-direction:column;align-items:flex-start;gap:3px;padding:8px 12px 7px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);text-align:left;max-width:100%}
+.ex .top{display:flex;align-items:center;gap:7px;font-size:1.3rem;font-weight:500}
+.ex .top .ic{color:var(--muted);font-size:.85rem}
+.ex small{color:var(--muted);font-size:.76rem}
+.note{margin-top:14px;font:700 1.35rem/1.15 var(--font-hand);color:var(--blue)}
+.dots{display:flex;gap:6px;justify-content:center;margin-block:16px 4px}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots span.on{background:var(--ink);width:22px;border-radius:99px}
+.actionbar{position:sticky;bottom:0;display:flex;justify-content:space-between;gap:10px;padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--paper) 35%);margin-top:6px}
+.actionrow{display:flex;justify-content:center;margin-top:18px}
+
+/* read */
+.readcard{margin:18px auto 6px;max-width:420px;text-align:center;background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:26px 14px 18px;box-shadow:4px 4px 0 var(--ink)}
+.readcard .w{font-size:clamp(2.1rem,10vw,3rem);font-weight:500;white-space:normal;overflow-wrap:anywhere}
+.readcard .gloss{margin-top:8px}
+.read-actions{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:18px;flex-wrap:wrap}
+.rate{margin-top:16px}
+.rate p{margin:0 0 8px}
+.rate-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* build */
+.slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-block:4px 18px}
+.slot{min-width:66px;height:60px;padding:0 10px;border-radius:12px;border:2px dashed var(--line);background:transparent;font:500 1.5rem/1 var(--font-body);display:grid;place-items:center}
+.slot.filled{border-style:solid;border-color:var(--blue);background:var(--card)}
+.slots.good .slot{border-color:var(--good);background:var(--good-soft)}
+.slots.bad .slot{border-color:var(--bad);background:var(--bad-soft)}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.tile{min-width:64px;height:56px;padding:0 14px;border-radius:12px;border:2px solid var(--ink);background:var(--card);box-shadow:0 3px 0 var(--ink);font:500 1.45rem/1 var(--font-body)}
+.tile.used{visibility:hidden}
+
+/* tombola */
+.caller{display:flex;align-items:center;justify-content:center;gap:12px;margin-block:14px 16px;flex-wrap:wrap}
+.call-lbl{font:600 .85rem/1 var(--font-body);color:var(--muted);font-variant-numeric:tabular-nums}
+.tcard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:10px;box-shadow:4px 4px 0 var(--ink);max-width:460px;margin:0 auto}
+.cell{position:relative;aspect-ratio:1.3;min-width:0;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);font:500 clamp(1rem,4.6vw,1.35rem)/1.1 var(--font-body);padding:4px;overflow:hidden}
+.cell.marked .w{opacity:.55}
+.cell.marked::after{content:"";position:absolute;width:24%;height:17%;right:7%;top:9%;border-radius:50%;background:radial-gradient(ellipse at 35% 35%,var(--bean-1),var(--bean-2));transform:rotate(-22deg);animation:drop .3s ease-out}
+.cell.nope{animation:shake .35s;border-color:var(--bad)}
+.cell.line{border-color:var(--lemon-deep);background:var(--lemon-soft)}
+.tbanner{min-height:2.2em;margin-top:12px;text-align:center}
+.tbanner .big{font:700 2.4rem/1 var(--font-hand);color:var(--blue)}
+
+/* fish */
+.sea{position:relative;height:300px;border-radius:18px;overflow:hidden;background:linear-gradient(var(--sea-1),var(--sea-2));border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.sea::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at 20% 120%,transparent 0 18px,rgba(255,255,255,.05) 18px 20px);pointer-events:none}
+.fish{position:absolute;left:0;top:0;display:flex;align-items:center;gap:6px;padding:10px 16px 10px 14px;border-radius:999px 70% 70% 999px;background:var(--card);border:2px solid var(--ink);font:500 1.2rem/1 var(--font-body);white-space:nowrap;will-change:transform}
+.fish::after{content:"";position:absolute;right:-15px;top:50%;width:16px;height:22px;margin-top:-11px;background:var(--ink);clip-path:polygon(0 50%,100% 0,100% 100%)}
+.fish.left{border-radius:70% 999px 999px 70%;padding:10px 14px 10px 16px}
+.fish.left::after{right:auto;left:-15px;clip-path:polygon(100% 50%,0 0,0 100%)}
+.fish .eye{width:6px;height:6px;border-radius:50%;background:var(--ink);flex:none}
+.fish.caught{transition:transform .5s ease-in,opacity .5s;opacity:0}
+.fish.nope{border-color:var(--bad);background:var(--bad-soft)}
+
+/* sort */
+.sortcard{margin:14px auto 18px;max-width:380px;min-height:130px;display:grid;place-items:center;background:var(--card);border:2px solid var(--ink);border-radius:18px;box-shadow:4px 4px 0 var(--ink);font:500 clamp(2rem,9vw,2.6rem)/1 var(--font-body);padding:16px}
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bucket{position:relative;padding:20px 10px 16px;border-radius:16px;border:2px solid var(--blue);background:var(--blue-soft);text-align:center;box-shadow:0 3px 0 var(--blue)}
+.bucket b{display:block;font:800 1.5rem/1 var(--font-display);color:var(--blue)}
+.bucket small{display:block;color:var(--muted);margin-top:4px;font-size:.82rem}
+
+/* stress */
+.sylrow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-block:4px 16px}
+.sylbtn{position:relative;min-width:70px;height:70px;padding:0 14px;border-radius:14px;border:2px solid var(--ink);background:var(--card);box-shadow:0 3px 0 var(--ink);font:500 1.65rem/1 var(--font-body)}
+.clap{display:block;text-align:center;font:700 1.3rem/1 var(--font-hand);color:var(--muted);margin-top:4px}
+
+/* results */
+.result{text-align:center;padding-top:8px}
+.bigstamp{position:relative;width:176px;height:176px;margin:14px auto 8px;border-radius:50%;border:5px solid var(--blue);color:var(--blue);background:var(--card);display:grid;place-content:center;gap:6px;transform:rotate(-8deg);animation:press .65s cubic-bezier(.2,1.5,.45,1) both}
+.bigstamp::after{content:"";position:absolute;inset:8px;border-radius:50%;border:2px dashed currentColor;opacity:.7}
+.bigstamp .n{font:600 .72rem/1 var(--font-body);letter-spacing:.2em;text-transform:uppercase}
+.bigstamp .city{font:800 1.3rem/1 var(--font-display);letter-spacing:.03em;text-transform:uppercase;max-width:130px;overflow-wrap:anywhere}
+.bigstamp.review{border-color:var(--good);color:var(--good)}
+.stars-big{display:flex;justify-content:center;gap:6px;color:var(--lemon-deep);margin-block:6px}
+.stars-big .ic svg{width:40px;height:40px}
+.stars-big .off{color:var(--line)}
+.stars-big .ic{animation:pop .45s cubic-bezier(.2,1.6,.4,1) both}
+.result h1{font-size:clamp(2rem,8vw,2.6rem);margin-top:6px;font-family:var(--font-hand);font-weight:700;color:var(--blue)}
+.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-block:18px}
+.result-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+
+/* sheet */
+.backdrop{position:fixed;inset:0;z-index:60;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:min(560px,100%);max-height:88vh;overflow:auto;background:var(--card);border:2px solid var(--ink);border-bottom:0;border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));animation:up .25s ease-out}
+.sheet h2{font-size:1.6rem;margin:4px 0 2px}
+.sheet .exs{margin-block:12px}
+.sheet-actions{display:grid;gap:10px;margin-top:14px}
+
+/* settings & method */
+.page-title{font:800 clamp(1.8rem,7vw,2.4rem)/1.05 var(--font-display);margin:16px 0 4px}
+.list{display:grid;gap:8px;margin-top:8px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--line);border-radius:13px;background:var(--card);min-width:0}
+.row .grow{flex:1;min-width:0}
+.row .grow b{display:block;overflow-wrap:anywhere}
+.row .grow small{color:var(--muted)}
+.switch{appearance:none;-webkit-appearance:none;width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;flex:none;cursor:pointer;margin:0;transition:background .15s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--card);transition:left .15s}
+.switch:checked{background:var(--good)}
+.switch:checked::after{left:21px}
+input[type=range]{width:100%;accent-color:var(--blue)}
+select{font:inherit;padding:.45rem .6rem;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+.prose{max-width:62ch}
+.prose h2{font-size:1.3rem;margin:26px 0 6px}
+.prose p,.prose li{margin:0 0 .7rem}
+.prose ol{padding-left:1.2rem}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:6px 0 10px;font-size:1.3rem}
+.sources li{font-size:.9rem}
+
+/* confetti */
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:100;display:none}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--lemon-soft)}50%{box-shadow:0 0 0 9px var(--lemon-soft)}}
+@keyframes ring{0%{box-shadow:0 4px 0 var(--ink),0 0 0 0 var(--lemon)}100%{box-shadow:0 4px 0 var(--ink),0 0 0 16px transparent}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes press{0%{transform:scale(1.7) rotate(-20deg);opacity:0}100%{transform:scale(1) rotate(-8deg);opacity:1}}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+@keyframes drop{0%{transform:translateY(-14px) rotate(-22deg);opacity:0}100%{transform:translateY(0) rotate(-22deg);opacity:1}}
+@keyframes drain{from{width:100%}to{width:0}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+@media (max-width:380px){
+  .chip.xp{display:none}
+}
+@media (max-width:420px){
+  .brand{font-size:1.08rem}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stat{padding:9px 10px}
+  .stat .val{font-size:1.25rem}
+}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"></header>
+<main id="view" class="wrap" tabindex="-1"></main>
+<div id="sheet-root"></div>
+<div class="sr-only" aria-live="polite" id="live"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   CONTENT
+   Word format: "ca-sa" = syllables; "ta*-vo-lo" = stress on marked syllable
+   (default: accented syllable, else second-to-last). "~word" = not a real word.
+   ============================================================ */
+const LEVELS = [
+{ id:1, city:'Venezia', it:'Le vocali', en:'The five vowels', focus:null,
+  learn:[
+    {t:'Five pure vowels', b:'Italian has five vowel letters, and each one keeps a single clean sound from start to finish. English "no" slides into a w at the end. Italian "no" stays a pure O.', ex:['a-pe','er-ba','i*-so-la','o-ca','u-va'], tip:'Keep your jaw still while the vowel sounds. No sliding.'},
+    {t:'Every vowel is spoken', b:'Italian has no silent vowels. A final E is always pronounced: mare is MA-re, never "mair".', ex:['ma-re','pa-ne','so-le','lu-na','vi-no'], tip:'If it is written, say it.'},
+    {t:'What they sound like', b:'A as in "father". E as in "bed". I as in "machine". O as in "or". U as in "food", with rounded lips.', ex:[{s:'a, e, i, o, u', w:'a e i o u'},'ca-sa','be-ne','vi-no','lu-na'], tip:'Short and crisp: one sound per vowel.'},
+    {t:'Two vowels in a row', b:'When vowels meet, say each one, quickly: mai is ma + i, auto is a + u + to.', ex:['mai','au-to','a-iu-to','Eu-ro-pa'], tip:'Give every vowel its own moment.'}
+  ],
+  listen:[['casa','cosa'],['pala','pila','palo'],['mare','more'],['vino','vano'],['luna','lana'],['pesto','pasto','posto'],['tutto','tetto','tatto'],['mela','mele'],['dire','dare'],['sole','sale'],['filo','fila']],
+  read:['a-pe','o-ca','u-va','i*-so-la','er-ba','ma-re','so-le','lu-na','vi-no','a-iu-to','au-to','Eu-ro-pa'],
+  build:['a-pe','o-ca','u-va','a-mi-co','i*-so-la','a-mo-re','lu-na','ma-re'],
+  game:{type:'tombola'} },
+
+{ id:2, city:'Verona', it:'Consonanti amiche', en:'Friendly consonants', focus:null,
+  learn:[
+    {t:'Say the sound, not the name', b:'Italian children learn M as "mmm", not "emme". Put a consonant in front of each vowel and you have a syllable.', ex:[{s:'ma, me, mi, mo, mu', w:'ma me mi mo mu'},{s:'la, le, li, lo, lu', w:'la le li lo lu'},'ma-no','lu-na'], tip:'Consonant + vowel is the basic brick of Italian.'},
+    {t:'The tapped R', b:'A single R is one quick tap of the tongue tip just behind the upper teeth, like the tt in American "butter" said fast.', ex:['ra-na','ma-re','o-ra','Ro-ma'], tip:'Say "butter" fast, then ma-re with the same flick.'},
+    {t:'A light L, everywhere', b:'Italian L is always light, with the tongue tip behind the teeth, even at the end of a syllable. There is no dark L like the one in English "milk".', ex:['so-le','al-to','me-la','la-na'], tip:'Keep the back of your tongue relaxed.'},
+    {t:'Read in syllables', b:'Italian words are chains of open syllables. Read them one syllable at a time, then speed up until they join.', ex:['li-mo-ne','mi-nu-to','ru-mo-re'], tip:'Clap once per syllable: li · mo · ne.'}
+  ],
+  listen:[['mano','nano'],['lana','rana'],['mare','male'],['mela','vela'],['seta','meta'],['fame','lame'],['neve','nave'],['sera','vera'],['fumo','sumo']],
+  read:['ma-no','me-la','na-ve','lu-na','ra-na','Ro-ma','fu-mo','so-le','va-so','li-mo-ne','mi-nu-to','ru-mo-re'],
+  build:['ma-no','ne-ve','lu-na','ra-na','so-le','li-mo-ne','mi-nu-to','ve-lo-ce'],
+  game:{type:'fish'} },
+
+{ id:3, city:'Milano', it:'P e B · T e D · F e V', en:'Pairs that buzz', focus:null,
+  learn:[
+    {t:'No puff of air', b:'English P and T at the start of a word come with a puff of air. Italian P and T have none. Hold your hand in front of your mouth: pane should feel calm.', ex:['pa-ne','pa-sta','tor-ta','to-po'], tip:'The p in English "spin" has no puff. That is the Italian P.'},
+    {t:'T and D touch the teeth', b:'Put your tongue tip against the back of your upper front teeth, not on the ridge behind them.', ex:['tet-to','da-do','den-te','tut-to'], tip:'Feel the tongue touch your teeth on every T.'},
+    {t:'Buzz or no buzz', b:'B, D and V make your throat vibrate. P, T and F do not. Touch your throat and compare.', ex:['pe-re','be-re','tu-e','du-e','fi-no','vi-no'], tip:'"vvvv" buzzes. "ffff" does not.'}
+  ],
+  listen:[['pere','bere'],['pasta','basta'],['pollo','bollo'],['tue','due'],['tetto','detto'],['tono','dono'],['fino','vino'],['foto','voto'],['fede','vede'],['banca','panca'],['dorso','torso']],
+  read:['pa-ne','por-ta','be-ne','tem-po','do-po','di-to','ven-to','fo-to','be-van-da'],
+  build:['pa-ne','por-ta','be-ne','tem-po','do-po','ven-to','ba-na-na','pa-ta-ta'],
+  game:{type:'tombola'} },
+
+{ id:4, city:'Torino', it:'C e G dure', en:'Hard C and G', focus:/c[aouòù]|g[aouòù]|c[lr]|g[lr]/,
+  learn:[
+    {t:'C + A, O, U sounds like K', b:'Before A, O or U, the letter C is a K sound, with no puff of air.', ex:['ca-sa','co-sa','cu-bo','a-mi-co'], tip:'Look at the next letter. A, O, U: hard.'},
+    {t:'G + A, O, U is the g in "go"', b:'Before A, O or U, G is hard, as in English "go".', ex:['gat-to','go-la','gu-fo','la-go'], tip:'Same rule as C: the vowel after it decides.'},
+    {t:'Before a consonant, too', b:'C and G stay hard before L and R.', ex:['cre-ma','cli-ma','gran-de','glo-ria'], tip:'GL followed by O is a hard G plus an L.'},
+    {t:'Italian has no letter K', b:'Italian writes the K sound with C, and with CH, which comes later. K, J, W, X and Y only appear in foreign words.', ex:['ca-ne','co-da','cuo-re'], tip:'C is the K of Italian.'}
+  ],
+  listen:[['gola','cola'],['gallo','callo'],['gara','cara'],['coda','cosa'],{t:'gatto',d:['~catto']},{t:'gufo',d:['~cufo']},{t:'cubo',d:['~gubo']},{t:'lago',d:['~laco']},{t:'amico',d:['~amigo']}],
+  read:['ca-sa','ca-ne','cu-bo','co-da','gat-to','gu-fo','gam-ba','la-go','cre-ma','gran-de'],
+  build:['ca-sa','ca-ne','cu-bo','gat-to','gu-fo','gam-ba','la-go','gran-de','a-mi-co'],
+  game:{type:'fish'} },
+
+{ id:5, city:'Genova', it:'C e G dolci', en:'Soft C and G', focus:/c[eiéè]|g[eiéè]/,
+  learn:[
+    {t:'C + E, I sounds like "ch"', b:'Before E or I, C sounds like the ch in "cheese".', ex:['ce-na','ci*-ne-ma','die-ci','ci-bo'], tip:'ce as in "chess", ci as in "cheese".'},
+    {t:'G + E, I sounds like "j"', b:'Before E or I, G sounds like the j in "jet".', ex:['ge-la-to','gi-ta','gen-te','gi-ro'], tip:'gelato starts like "jello".'},
+    {t:'A silent I keeps it soft', b:'To get ch or j before A, O or U, Italian adds an I that you do not pronounce: ciao sounds like "chow", giallo like "jallo".', ex:['cia-o','cioc-co-la-to','gial-lo','gior-no','giu-sto'], tip:'Grey letters in this app are silent.'},
+    {t:'One letter, two sounds', b:'The same C changes with the next vowel: amico has a K, amici has a ch. Cara is hard, cera is soft.', ex:['a-mi-co','a-mi-ci','ca-ra','ce-ra','gal-lo','gial-lo'], tip:'Always read C and G together with the letter after them.'}
+  ],
+  listen:[['giallo','gallo'],['giusto','gusto'],['bacio','baco'],['cacio','caco'],['cera','cara'],['cento','canto'],['certo','corto'],{t:'ciao',d:['~cao','~chao']}],
+  read:['ce-na','ci*-ne-ma','cia-o','die-ci','ci-bo','ge-la-to','gi-ta','gior-no','gial-lo','cioc-co-la-to','pa*-gi-na','a-ran-cia'],
+  build:['ce-na','ci*-ne-ma','ge-la-to','gior-no','gial-lo','cioc-co-la-to','a-ran-cia','va-li-gia'],
+  game:{type:'sort', mode:'see', q:'Read the word. Is its C or G hard or soft?', buckets:[['Hard','K, or G as in "go"'],['Soft','ch, or j']],
+    items:[['casa',0],['cena',1],['cuore',0],['ciao',1],['cibo',1],['coda',0],['amico',0],['amici',1],['dieci',1],['poco',0],['luce',1],['barca',0],['gatto',0],['gelato',1],['gola',0],['giro',1],['lago',0],['gente',1],['giallo',1],['gufo',0]]} },
+
+{ id:6, city:'Bologna', it:'CHI, CHE, GHI, GHE', en:'H keeps it hard', focus:/ch|gh/,
+  learn:[
+    {t:'H keeps C hard', b:'To keep C hard before E or I, Italian adds an H: che sounds like "keh", chi like "key". In Italian, CH is always a K sound.', ex:['che','chi','an-che','chia-ve','chie-sa'], tip:'Forget English "church": Italian CH is K.'},
+    {t:'GH is a hard G', b:'The same trick works for G: spaghetti, ghiaccio, laghi.', ex:['spa-ghet-ti','ghiac-cio','la-ghi','fun-ghi'], tip:'You already say spaghetti with a hard G.'},
+    {t:'Cina or china?', b:'One silent letter flips the sound. Cina (China) starts with ch. china (ink) starts with K. giro starts with j, ghiro (dormouse) with a hard G.', ex:['Ci-na','chi-na','gi-ro','ghi-ro'], tip:'Look for the H.'},
+    {t:'H alone is silent', b:'At the start of a word, H makes no sound at all: ho, hai, ha. Even hotel is "otel".', ex:['ho','hai','ha','ho-tel*'], tip:'lago becomes laghi and stays hard. amico becomes amici and turns soft.'}
+  ],
+  listen:[['china','Cina'],['chi','ci'],['ghiro','giro'],['ghetto','getto'],{t:'chiave',d:['~ciave']},{t:'perché',d:['~percé']},{t:'spaghetti',d:['~spagetti']},{t:'laghi',d:['~lagi']},{t:'anche',d:['~ance']}],
+  read:['che','chi','per-ché','an-che','chia-ve','chie-sa','Mi-che-le','spa-ghet-ti','ghiac-cio','la-ghi','fun-ghi','ho'],
+  build:['chia-ve','chie-sa','an-che','per-ché','spa-ghet-ti','ghiac-cio','la-ghi','fun-ghi'],
+  game:{type:'sort', mode:'see', q:'Read the word. Is its C or G hard or soft?', buckets:[['Hard','K, or G as in "go"'],['Soft','ch, or j']],
+    items:[['chiesa',0],['cielo',1],['anche',0],['dieci',1],['ghiaccio',0],['gelato',1],['funghi',0],['giro',1],['ghiro',0],['Cina',1],['china',0],['amiche',0],['amici',1],['laghi',0],['pagine',1],['che',0]]} },
+
+{ id:7, city:'Firenze', it:'QU e i dittonghi', en:'QU and gliding vowels', focus:/qu|cu(?=[aeioò])|gu(?=[aeio])|uo|ie/,
+  learn:[
+    {t:'QU sounds like "kw"', b:'After Q, the U is always a quick w: quando sounds like "kwando".', ex:['quan-do','quat-tro','que-sto','qui'], tip:'Q never appears without a U.'},
+    {t:'CU + vowel sounds the same', b:'cuore and cuoco also start with "kw". Same sound, different spelling. QU is far more common.', ex:['cuo-re','cuo-co','scuo-la','ac-qua'], tip:'acqua is spelled with CQ.'},
+    {t:'GU + vowel sounds like "gw"', b:'guanto sounds like "gwanto", lingua like "lingwa".', ex:['guan-to','guer-ra','lin-gua','u-gua-le'], tip:'Keep the w short and light.'},
+    {t:'I and U can glide', b:'Next to another vowel, an unstressed I becomes a quick y and U a quick w, inside one syllable: ieri sounds like "YEH-ree", uomo like "WOH-mo".', ex:['ie-ri','pie-de','fio-re','uo-mo','buo-no','fuo-ri'], tip:'One beat, not two: buo-no, not bu-o-no.'}
+  ],
+  listen:[['quanto','canto'],['quasi','casi'],['acqua','acca'],['ieri','eri'],['siete','sete'],['lieve','leve'],['suono','sono'],['fuori','fori'],['puoi','poi']],
+  read:['quan-do','quat-tro','que-sto','qui','ac-qua','cuo-re','cuo-co','scuo-la','guan-to','lin-gua','uo-mo','buo-no','pie-de','fio-re','ie-ri'],
+  build:['quan-do','quat-tro','que-sto','ac-qua','cuo-re','scuo-la','guan-to','lin-gua','uo-mo','buo-no','fio-re'],
+  game:{type:'fish'} },
+
+{ id:8, city:'Siena', it:'GN e GLI', en:'GN and GLI', focus:/gn|gli/,
+  learn:[
+    {t:'GN sounds like "ny"', b:'GN is like the ny in "canyon", held a little longer: bagno sounds like "ban-nyo".', ex:['gnoc-chi','ba-gno','so-gno','mon-ta-gna','Bo-lo-gna'], tip:'Press the middle of your tongue up, not the tip.'},
+    {t:'GLI is a soft L', b:'Press the middle of your tongue flat against the roof of your mouth and say L. It is close to the lli in "million", but tighter. Before another vowel the I is silent: figlio sounds like "fee-lyo".', ex:['fi-glio','fo-glia','fa-mi-glia','a-glio','lu-glio'], tip:'One sound, not G + L.'},
+    {t:'GL before other vowels', b:'Only GLI is soft. Before A, E, O or U you hear a hard G and an L: globo, inglese.', ex:['glo-bo','in-gle-se','glo-ria'], tip:'GLI is soft. GLO is hard.'},
+    {t:'Hear the difference', b:'sono / sogno · campana / campagna · fili / figli. The soft sound changes the word.', ex:['so-no','so-gno','cam-pa-na','cam-pa-gna','fi-li','fi-gli'], tip:'Listen for the tongue sliding into a y.'}
+  ],
+  listen:[['sono','sogno'],['campana','campagna'],['lena','legna'],['fili','figli'],['ali','agli'],['mole','moglie'],{t:'gnocchi',d:['~nocchi']},{t:'famiglia',d:['~familia']},{t:'lavagna',d:['~lavana']}],
+  read:['gnoc-chi','ba-gno','so-gno','la-va-gna','mon-ta-gna','si-gno-ra','Bo-lo-gna','fi-glio','fo-glia','fa-mi-glia','a-glio','lu-glio','me-glio','in-gle-se'],
+  build:['gnoc-chi','ba-gno','so-gno','la-va-gna','mon-ta-gna','si-gno-ra','fi-glio','fo-glia','fa-mi-glia','a-glio'],
+  game:{type:'sort', mode:'hear', q:'Listen. Do you hear a plain N or L, or a soft GN or GLI?', buckets:[['Plain','N or L'],['Soft','GN or GLI']],
+    items:[['sono',0],['sogno',1],['campana',0],['campagna',1],['fili',0],['figli',1],['ali',0],['aglio',1],['nome',0],['gnomo',1],['luna',0],['luglio',1],['pane',0],['bagno',1],['mela',0],['meglio',1]]} },
+
+{ id:9, city:'Roma', it:'SCI, SCE, SCHI, SCHE', en:'SC: "sh" or "sk"', focus:/sch|sc[ieèé]?/,
+  learn:[
+    {t:'SC + E, I sounds like "sh"', b:'Like the sh in "shell": scena, pesce, piscina.', ex:['sce-na','sci','pe-sce','pi-sci-na','u-sci-ta'], tip:'Between vowels the sh is a little long: pe-sshe.'},
+    {t:'SCI + A, O, U is "sh" too', b:'The I is silent again: sciarpa sounds like "sharpa".', ex:['sciar-pa','la-scia','a-sciut-to'], tip:'A grey I is a silent I.'},
+    {t:'SCH sounds like "sk"', b:'H keeps it hard: schiena sounds like "skyena".', ex:['schie-na','scher-zo','ma*-sche-ra','pe-sche'], tip:'H after C always means K.'},
+    {t:'SC + A, O, U sounds like "sk"', b:'scarpa, scuola, Toscana.', ex:['scar-pa','scuo-la','ta-sca','To-sca-na'], tip:'pesce (fish) or pesche (peaches)? sciarpa (scarf) or scarpa (shoe)?'}
+  ],
+  listen:[['pesce','pesche'],['lisce','lische'],['mosca','moscia'],['scocca','sciocca'],['sciarpa','scarpa'],{t:'scena',d:['~schena']},{t:'schiena',d:['~sciena']},{t:'uscita',d:['~uschita']}],
+  read:['sce-na','sci','pe-sce','u-sci-ta','pi-sci-na','sciar-pa','schie-na','scher-zo','ma*-sche-ra','scar-pa','scuo-la','To-sca-na'],
+  build:['sce-na','pe-sce','u-sci-ta','pi-sci-na','sciar-pa','schie-na','scher-zo','ma*-sche-ra','scar-pa','scuo-la'],
+  game:{type:'sort', mode:'see', q:'Read the word. Does its SC sound like "sh" or "sk"?', buckets:[['sh','as in "shell"'],['sk','as in "sky"']],
+    items:[['scena',0],['scarpa',1],['pesce',0],['pesche',1],['sciarpa',0],['scuola',1],['schiena',1],['piscina',0],['uscita',0],['tasca',1],['maschera',1],['lascia',0],['scherzo',1],['conoscere',0],['Toscana',1],['sci',0]]} },
+
+{ id:10, city:'Napoli', it:'Le doppie', en:'Double consonants', focus:/([bcdfglmnpqrstvz])\1|cq/,
+  learn:[
+    {t:'Double means longer', b:'Hold a double consonant about twice as long, like the k-k in "bookcase" or the t-t in "cat tail".', ex:['pal-la','gat-to','mam-ma','non-no','piz-za'], tip:'You can feel a tiny pause on the double.'},
+    {t:'Listen to the rhythm', b:'Before a double, the vowel is short. Before a single, it is a little longer: pala ("paa-la") vs palla ("pal-la").', ex:['pa-la','pal-la','ca-ro','car-ro'], tip:'Tap the rhythm on the table: long-short, short-long.'},
+    {t:'It changes the meaning', b:'sete (thirst) / sette (seven) · nono (ninth) / nonno (grandpa) · capello (a hair) / cappello (hat).', ex:['se-te','set-te','no-no','non-no','ca-pel-lo','cap-pel-lo'], tip:'Ask for un cappello, unless you want a single hair.'},
+    {t:'Double R rolls', b:'A single R is one tap. RR is a real trill of several quick taps: caro / carro, terra, birra.', ex:['ca-ro','car-ro','ter-ra','bir-ra'], tip:'Cannot trill yet? Say "butter-butter" fast, or stretch the tap in "tre".'}
+  ],
+  listen:[['pala','palla'],['caro','carro'],['sete','sette'],['nono','nonno'],['capello','cappello'],['papa','pappa'],['fato','fatto'],['eco','ecco'],['pena','penna'],['sono','sonno'],['casa','cassa'],['copia','coppia'],['note','notte'],['tuta','tutta'],['polo','pollo'],['rosa','rossa'],['camino','cammino']],
+  read:['pal-la','gat-to','mam-ma','non-no','piz-za','cap-puc-ci-no','spa-ghet-ti','bot-ti-glia','ter-ra','bir-ra','ec-co','cas-sa'],
+  build:['pal-la','gat-to','non-no','cap-pel-lo','set-te','not-te','car-ro','ter-ra','bot-ti-glia','cap-puc-ci-no'],
+  game:{type:'sort', mode:'hear', q:'Listen. Single consonant or double?', buckets:[['Single','short and light'],['Double','held longer']],
+    items:[['pala',0],['palla',1],['caro',0],['carro',1],['sete',0],['sette',1],['nono',0],['nonno',1],['fato',0],['fatto',1],['pena',0],['penna',1],['sono',0],['sonno',1],['casa',0],['cassa',1],['note',0],['notte',1],['polo',0],['pollo',1],['rosa',0],['rossa',1]]} },
+
+{ id:11, city:'Bari', it:'S e Z', en:'S and Z', focus:/zz?|s(?=[bdglmnrv])/,
+  learn:[
+    {t:'S is usually a hiss', b:'At the start of a word before a vowel, and when doubled, S is a clear s: sole, sasso, rosso.', ex:['so-le','se-ra','sas-so','ros-so'], tip:'SS is always a hiss.'},
+    {t:'S buzzes before B, D, G, L, M, N, R, V', b:'Then it turns into the z of "zoo": sbaglio, slitta, smetto, sveglia.', ex:['sba-glio','slit-ta','smet-to','sve-glia'], tip:'Let the buzz run straight into the next consonant.'},
+    {t:'Between vowels, it depends', b:'In the north, casa and rosa have a buzzing z. In much of central and southern Italy they have a hissing s. Both are correct.', ex:['ca-sa','ro-sa','me-se'], tip:'Pick one and stay consistent.'},
+    {t:'Z is "ts" or "dz"', b:'Italian Z is either "ts" (pizza, grazie, stazione) or "dz" (zero, zanzara, zaino). It varies by word and by region, so learn each word by ear. The ending -zione is always "ts".', ex:['piz-za','gra-zie','sta-zio-ne','ze-ro','zan-za-ra','zai-no'], tip:'"ts" as in "cats", "dz" as in "kids".'}
+  ],
+  listen:[['mezzo','messo'],['pazzo','passo'],['pozzo','posso'],['tazza','tassa'],['zeta','seta'],['coro','corro'],['poro','porro'],{t:'zio',d:['~sio']},{t:'grazie',d:['~grasie']}],
+  read:['so-le','ros-so','sas-so','sba-glio','slit-ta','smet-to','piz-za','gra-zie','zi-o','sta-zio-ne','ze-ro','zan-za-ra','mez-zo','zai-no','Ro-ma','ter-ra'],
+  build:['piz-za','gra-zie','sta-zio-ne','ze-ro','zan-za-ra','zai-no','sba-glio','sve-glia','ros-so','ter-ra'],
+  game:{type:'tombola'} },
+
+{ id:12, city:'Palermo', it:"L'accento", en:'Stress and accents', focus:/[àèéìíòóùú]/,
+  learn:[
+    {t:'Stress the second-to-last syllable', b:'Most Italian words are stressed on the second-to-last syllable. In this app, the stressed syllable is underlined.', ex:['ca-sa','a-mi-co','ge-la-to','pa-ro-la'], tip:'When in doubt, stress the second-to-last.'},
+    {t:'An accent mark means final stress', b:'A written accent always sits on the last vowel, and the stress goes there: città, caffè, perché, università.', ex:['cit-tà','caf-fè','per-ché','u-ni-ver-si-tà'], tip:'See an accent? Land on it.'},
+    {t:'Some words stress earlier', b:'These have no accent mark, so learn them by ear.', ex:['ta*-vo-lo','te-le*-fo-no','mac*-chi-na','mu*-si-ca','sa*-ba-to'], tip:'Dictionaries mark this stress. Everyday writing does not.'},
+    {t:'Accents change the meaning', b:'papa (pope) / papà (dad) · pero (pear tree) / però (but) · meta (goal) / metà (half).', ex:['pa-pa','pa-pà','pe-ro','pe-rò','me-ta','me-tà'], tip:'Call your dad papà, not papa.'},
+    {t:'Questions rise', b:'The same words can be a statement or a question. Only the melody changes.', ex:[{s:'Hai fame.', w:'Hai fame.', g:"You're hungry."},{s:'Hai fame?', w:'Hai fame?', g:'Are you hungry?'}], tip:'Let your voice climb at the end of a question.'}
+  ],
+  listen:[['papa','papà'],['pero','però'],['meta','metà'],['capi','capì'],{t:'città',d:['~citta']},{t:'caffè',d:['~caffe']},{t:'perché',d:['~perche']},{t:'università',d:['~universita']}],
+  read:['cit-tà','caf-fè','per-ché','pa-pà','ta*-vo-lo','te-le*-fo-no','mac*-chi-na','mu*-si-ca','sa*-ba-to','ca*-me-ra','ge-la-to','pa-ro-la'],
+  build:['cit-tà','caf-fè','per-ché','ta*-vo-lo','te-le*-fo-no','mac*-chi-na','mu*-si-ca','sa*-ba-to','pa-ro-la'],
+  game:{type:'stress', pool:['ca-sa','a-mi-co','ge-la-to','ta*-vo-lo','te-le*-fo-no','mac*-chi-na','mu*-si-ca','cit-tà','caf-fè','per-ché','pa-pà','pa-pa','u-ni-ver-si-tà','sa*-ba-to','ca*-me-ra','pe-ro','pe-rò','me-ta','me-tà','pa-ro-la','fi-ne-stra','po-mo-do-ro','cioc-co-la-to','ca-pi-to','pa*-gi-na','ci*-ne-ma','i*-so-la','ma*-sche-ra']} }
+];
+
+const GLOSS = {
+  ape:'bee', erba:'grass', isola:'island', oca:'goose', uva:'grapes', mare:'sea', pane:'bread', sole:'sun', luna:'moon', vino:'wine',
+  casa:'house', bene:'well, good', mai:'never', auto:'car', aiuto:'help', europa:'Europe', cosa:'thing', pala:'shovel', pila:'battery; stack',
+  palo:'pole', more:'blackberries', vano:'vain; empty space', lana:'wool', pesto:'basil sauce', pasto:'meal', posto:'place, seat', tutto:'everything',
+  tetto:'roof', tatto:'tact; touch', mela:'apple', mele:'apples', dire:'to say', dare:'to give', sale:'salt', filo:'thread, wire', fila:'line, queue',
+  amico:'friend', amore:'love', mano:'hand', nano:'dwarf', rana:'frog', male:'bad; pain', vela:'sail', seta:'silk', meta:'goal, destination',
+  fame:'hunger', lame:'blades', neve:'snow', nave:'ship', sera:'evening', vera:'true (f.)', fumo:'smoke', sumo:'sumo', ora:'now; hour', roma:'Rome',
+  alto:'tall, high', limone:'lemon', minuto:'minute', rumore:'noise', vaso:'vase', veloce:'fast', pasta:'pasta', torta:'cake', topo:'mouse',
+  dado:'dice; stock cube', dente:'tooth', pere:'pears', bere:'to drink', tue:'yours (pl.)', due:'two', fino:'until; fine', basta:'enough!',
+  pollo:'chicken', bollo:'stamp, seal', detto:'said; saying', tono:'tone', dono:'gift', foto:'photo', voto:'vote; grade', fede:'faith',
+  vede:'sees', banca:'bank', panca:'bench', dorso:'back (of something)', torso:'torso', porta:'door', tempo:'time; weather', dopo:'after',
+  dito:'finger', vento:'wind', bevanda:'drink', banana:'banana', patata:'potato', gatto:'cat', gola:'throat', gufo:'owl', lago:'lake',
+  crema:'cream', clima:'climate', grande:'big', gloria:'glory', cane:'dog', coda:'tail; queue', cuore:'heart', cubo:'cube', gamba:'leg',
+  cola:'cola', gallo:'rooster', callo:'callus', gara:'race, contest', cara:'dear (f.)', cena:'dinner', cinema:'cinema', dieci:'ten', cibo:'food',
+  gelato:'ice cream', gita:'trip, outing', gente:'people', giro:'tour, turn', ciao:'hi; bye', cioccolato:'chocolate', giallo:'yellow',
+  giorno:'day', giusto:'right, fair', amici:'friends', cera:'wax', gusto:'taste, flavor', bacio:'kiss', baco:'silkworm', cacio:'cheese',
+  caco:'persimmon', cento:'one hundred', canto:'song; I sing', certo:'sure', corto:'short', pagina:'page', arancia:'orange (fruit)',
+  valigia:'suitcase', poco:'a little', luce:'light', barca:'boat', che:'that; what', chi:'who', anche:'also, too', chiave:'key', chiesa:'church',
+  spaghetti:'spaghetti', ghiaccio:'ice', laghi:'lakes', funghi:'mushrooms', Cina:'China', china:'ink; slope', ghiro:'dormouse', ho:'I have',
+  hai:'you have', ha:'has', hotel:'hotel', ci:'us; there', ghetto:'ghetto', getto:'jet, spurt', 'perché':'why; because', michele:'Michael (a name)',
+  cielo:'sky', amiche:'friends (f.)', pagine:'pages', quando:'when', quattro:'four', questo:'this', qui:'here', cuoco:'cook, chef', scuola:'school',
+  acqua:'water', guanto:'glove', guerra:'war', lingua:'language; tongue', uguale:'equal, same', ieri:'yesterday', piede:'foot', fiore:'flower',
+  uomo:'man', buono:'good', fuori:'outside', quanto:'how much', quasi:'almost', casi:'cases', acca:'the letter H', eri:'you were',
+  siete:'you are (pl.)', sete:'thirst', lieve:'light, gentle', leve:'levers', suono:'sound', sono:'I am; they are', fori:'holes', puoi:'you can',
+  poi:'then', gnocchi:'gnocchi', bagno:'bathroom', sogno:'dream', montagna:'mountain', bologna:'Bologna', figlio:'son', foglia:'leaf',
+  famiglia:'family', aglio:'garlic', luglio:'July', globo:'globe', inglese:'English', fili:'threads', figli:'children, sons', campana:'bell',
+  campagna:'countryside', lena:'energy, stamina', legna:'firewood', ali:'wings', agli:'garlic (pl.); to the', mole:'bulk, mass', moglie:'wife',
+  lavagna:'blackboard', signora:'lady; Mrs.', meglio:'better', nome:'name', gnomo:'gnome', scena:'scene', sci:'skiing; skis', pesce:'fish',
+  piscina:'swimming pool', uscita:'exit', sciarpa:'scarf', lascia:'leaves, lets', asciutto:'dry', schiena:'back (body)', scherzo:'joke',
+  maschera:'mask', pesche:'peaches', scarpa:'shoe', tasca:'pocket', toscana:'Tuscany', lisce:'smooth (f. pl.)', lische:'fish bones', mosca:'fly',
+  moscia:'limp (f.)', scocca:'car body, shell', sciocca:'silly (f.)', conoscere:'to know', palla:'ball', mamma:'mom', nonno:'grandpa', pizza:'pizza',
+  caro:'dear; expensive', carro:'cart', sette:'seven', nono:'ninth', capello:'a single hair', cappello:'hat', terra:'earth, ground', birra:'beer',
+  papa:'pope', pappa:'baby food', fato:'fate', fatto:'done; fact', eco:'echo', ecco:'here it is', pena:'pity; penalty', penna:'pen', sonno:'sleep',
+  cassa:'cash register; crate', copia:'copy', coppia:'couple', note:'notes', notte:'night', tuta:'tracksuit, overalls', tutta:'all, whole (f.)',
+  polo:'pole (of the Earth)', rosa:'rose; pink', rossa:'red (f.)', camino:'fireplace', cammino:'path, walk', cappuccino:'cappuccino',
+  bottiglia:'bottle', rosso:'red', sasso:'stone', sbaglio:'mistake', slitta:'sled', smetto:'I stop', sveglia:'alarm clock', mese:'month',
+  grazie:'thank you', stazione:'station', zero:'zero', zanzara:'mosquito', zaino:'backpack', zio:'uncle', mezzo:'half; middle', messo:'put',
+  pazzo:'crazy', passo:'step', pozzo:'well (for water)', posso:'I can', tazza:'cup', tassa:'tax', zeta:'the letter Z', coro:'choir', corro:'I run',
+  poro:'pore', porro:'leek', 'città':'city', 'caffè':'coffee', 'università':'university', 'papà':'dad', tavolo:'table', telefono:'telephone',
+  macchina:'car', musica:'music', sabato:'Saturday', camera:'room', parola:'word', pero:'pear tree', 'però':'but', 'metà':'half', capi:'bosses; heads',
+  'capì':'understood (he/she)', finestra:'window', pomodoro:'tomato', capito:'understood'
+};
+const PSEUDO_NOTE = { amigo:"That one is Spanish, not Italian.", familia:"That's Spanish, not Italian.", chao:"Not Italian: CH always sounds like K." };
+
+const PRAISE = [['Esatto!','Exactly right.'],['Perfetto!','Perfect.'],['Ottimo!','Excellent.'],['Che orecchio!','What an ear!'],['Fantastico!','Fantastic.'],['Giusto!','That’s right.'],['Benissimo!','Very well done.'],['Grande!','Great job.'],['Evviva!','Hooray!']];
+const OOPS = [['Quasi!','Almost.'],['Riprova!','You’ll get it next time.'],['Piano piano.','Step by step.'],['Nessun problema.','No problem.'],['Sbagliando s’impara.','We learn by making mistakes.'],['Ascolta ancora.','Listen again.']];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = (s, r=document) => r.querySelector(s);
+function h(tag, props, ...kids){
+  const el = document.createElement(tag);
+  if (props) for (const k in props){
+    const v = props[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+    else if (k === 'disabled' || k === 'checked' || k === 'value') el[k] = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat(Infinity)){
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pick = (a,n) => shuffle(a).slice(0,n);
+const rnd = a => a[Math.floor(Math.random()*a.length)];
+const pad = n => String(n).padStart(2,'0');
+const dayStr = (d=new Date()) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const addDays = (s,n) => { const [y,m,d] = s.split('-').map(Number); return dayStr(new Date(y,m-1,d+n)); };
+const today = () => dayStr();
+const reduceMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const phrase = list => { const [it,en] = rnd(list); return {it,en}; };
+
+let CLEAN = [];
+let KEYS = null;
+let GEN = 0;
+function cleanup(){ GEN++; const c = CLEAN; CLEAN = []; c.forEach(f=>{ try{ f(); }catch(e){} }); KEYS = null; }
+function later(fn, ms){ const t = setTimeout(fn, ms); CLEAN.push(()=>clearTimeout(t)); return t; }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && closeSheet()) return;
+  if (!KEYS || e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target && e.target.tagName) || '';
+  if (/INPUT|SELECT|TEXTAREA/.test(tag)) return;
+  if ((e.key === 'Enter' || e.key === ' ') && tag === 'BUTTON') return; // let the focused button handle it
+  const fn = KEYS[e.key] || KEYS[e.key.toLowerCase()];
+  if (fn){ e.preventDefault(); fn(e); }
+});
+
+/* ---------- word parsing & rendering ---------- */
+function glossOf(t){ return GLOSS[t] ?? GLOSS[t.toLowerCase()] ?? null; }
+function parseW(raw){
+  if (raw && typeof raw === 'object'){
+    if (raw.text !== undefined) return raw;
+    return {text:raw.w, say:raw.s, gloss:raw.g || null, syl:null, stress:-1, pseudo:false};
+  }
+  let s = String(raw), pseudo = false;
+  if (s[0] === '~'){ pseudo = true; s = s.slice(1); }
+  let syl = null, stress = -1;
+  if (s.includes('-') || s.includes('*')){
+    const parts = s.split('-');
+    syl = parts.map(p => p.replace('*',''));
+    stress = parts.findIndex(p => p.includes('*'));
+    s = syl.join('');
+    if (stress < 0){
+      const acc = syl.findIndex(x => /[àèéìíòóùú]/.test(x));
+      stress = acc >= 0 ? acc : (syl.length === 1 ? 0 : syl.length - 2);
+    }
+  }
+  return {text:s, say:s, syl, stress, pseudo, gloss: pseudo ? null : glossOf(s)};
+}
+const VOW = 'aeiouàèéìíòóùú';
+function classify(text){
+  const t = text.toLowerCase(), out = [];
+  for (let i=0;i<t.length;i++){
+    const ch = t[i];
+    if (!/[a-zàèéìíòóùú]/.test(ch)){ out.push(''); continue; }
+    if (ch === 'h'){ out.push('s'); continue; }
+    if (ch === 'i' && i > 0 && i+1 < t.length && VOW.includes(t[i+1])){
+      const prev = t[i-1], prev2 = t.slice(Math.max(0,i-2), i);
+      if (prev === 'c' || prev === 'g' || prev2 === 'gl'){ out.push('s'); continue; }
+    }
+    out.push(VOW.includes(ch) ? 'v' : 'c');
+  }
+  return out;
+}
+function wordEl(w, o={}){
+  const p = parseW(w);
+  const text = p.text, lower = text.toLowerCase(), cls = classify(text);
+  const f = new Array(text.length).fill(false);
+  if (o.focus){
+    const re = new RegExp(o.focus.source, 'g'); let m;
+    while ((m = re.exec(lower))){ for (let i=m.index;i<m.index+m[0].length;i++) f[i] = true; if (!m[0].length) re.lastIndex++; }
+  }
+  const root = h('span', {class:'w' + (o.plain ? ' plain' : '')});
+  const letter = i => h('span', {class: (cls[i] || '') + (f[i] ? ' f' : '')}, text[i]);
+  if (p.syl && o.dots !== false){
+    let i = 0;
+    p.syl.forEach((sy, si) => {
+      if (si > 0) root.append(h('span', {class:'dot', 'aria-hidden':'true'}, '·'));
+      const sp = h('span', {class: 'sy' + (si === p.stress && o.stress !== false ? ' st' : '')});
+      for (let k=0;k<sy.length;k++){ sp.append(letter(i)); i++; }
+      root.append(sp);
+    });
+  } else {
+    for (let i=0;i<text.length;i++) root.append(letter(i));
+  }
+  return root;
+}
+function glossText(p){ if (p.pseudo) return PSEUDO_NOTE[p.text] || 'Not a real Italian word.'; return p.gloss || ''; }
+
+/* ---------- icons ---------- */
+const ICONS = {
+  play:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.6v12.8a1 1 0 0 0 1.53.85l10-6.4a1 1 0 0 0 0-1.7l-10-6.4A1 1 0 0 0 8 5.6z" fill="currentColor"/></svg>',
+  slow:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8.5 18.5a5 5 0 1 1 5-5c0 1.6-1.2 2.8-2.7 2.8s-2.5-1.1-2.5-2.4 1-2.2 2.1-2.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M15 18.5c2.3 0 4-1.3 4-3.8V9.5m0 0-1.3-2.2M19 9.5l1.5-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  speaker:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  close:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  cross:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>',
+  retry:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4v4.5H9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  flame:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.8 3.6 4.8 5.6 4.8 10.4A4.8 4.8 0 0 1 12 17.7a4.8 4.8 0 0 1-4.8-4.8c0-2.4 1.3-3.6 2-5.4.9 1 1.4 2 1.6 3.3.9-2.2 1.4-4.7 1.2-8.3z" transform="translate(0 2)" fill="var(--vowel)"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9.5M18.5 7H20M4 17h3.5M12.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="7" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="17" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+  star:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
+};
+function icon(n, cls){ const s = h('span', {class:'ic' + (cls ? ' ' + cls : '')}); s.innerHTML = ICONS[n]; return s; }
+function starsEl(n, big){
+  return h('div', {class: big ? 'stars-big' : 'stars', 'aria-label': `${n} of 3 stars`},
+    [0,1,2].map(i => { const s = icon('star', i < n ? '' : 'off'); if (big) s.style.animationDelay = (0.25 + i*0.18) + 's'; return s; }));
+}
+
+/* ============================================================
+   STORAGE: this browser + (when available) the viewer's private account store
+   ============================================================ */
+const LS_P = 'suoni-italia:progress:v1', LS_S = 'suoni-italia:settings:v1';
+const lsGet = k => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
+const lsSet = (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+const freshProgress = () => ({v:1, updatedAt:0, levels:{}, xp:0, daily:{date:'', xp:0}, streak:{count:0, last:''}, earMs:0, items:{}, lessons:0, reviews:0, diploma:''});
+function normalize(o){ const p = Object.assign(freshProgress(), o || {}); delete p.pet; ['levels','items','daily','streak'].forEach(k=>{ if (!p[k] || typeof p[k] !== 'object') p[k] = freshProgress()[k]; }); return p; }
+let P = normalize(lsGet(LS_P));
+let S = Object.assign({rate:0.9, vary:true, fx:true, goal:100, off:[]}, lsGet(LS_S) || {});
+const Sync = { ref:null, mode:'local', writing:false, again:false, timer:0 };
+
+function save(){ P.updatedAt = Date.now(); lsSet(LS_P, P); queueRemote(); }
+function saveSettings(){ lsSet(LS_S, S); }
+function queueRemote(){ if (!Sync.ref) return; clearTimeout(Sync.timer); Sync.timer = setTimeout(flushRemote, 1500); }
+async function flushRemote(retried){
+  if (!Sync.ref) return;
+  if (Sync.writing){ Sync.again = true; return; }
+  Sync.writing = true;
+  try { await Sync.ref.set(JSON.parse(JSON.stringify(P))); Sync.mode = 'account'; }
+  catch(e){
+    if (e && e.code === 'unavailable' && !retried){ Sync.writing = false; setTimeout(()=>flushRemote(true), 1500 + Math.random()*2000); return; }
+    if (e && (e.code === 'revoked' || e.code === 'not_granted' || e.code === 'invalid_argument')){ Sync.ref = null; Sync.mode = 'local'; }
+  }
+  Sync.writing = false;
+  if (Sync.again){ Sync.again = false; queueRemote(); }
+  updateSyncLabel();
+}
+async function initSync(){
+  try {
+    const c = window.claude;
+    if (!c || typeof c.use !== 'function') return;
+    const [db, user] = await Promise.all([c.use('db'), c.use('user')]);
+    if (!db || !user) return;
+    const uid = await user.id();
+    if (!uid) return;
+    const ref = db.doc('data/users/' + uid + '/progress');
+    const snap = await ref.get();
+    Sync.ref = ref; Sync.mode = 'account';
+    if (snap.exists){
+      const remote = snap.data() || {};
+      if ((remote.updatedAt || 0) > (P.updatedAt || 0)){
+        P = normalize(JSON.parse(JSON.stringify(remote)));
+        lsSet(LS_P, P);
+        renderTopbar();
+        if (SCREEN === 'home') renderHome();
+      } else if ((P.updatedAt || 0) > (remote.updatedAt || 0)) queueRemote();
+    } else if (P.updatedAt) queueRemote();
+  } catch(e){ /* stay on this device only */ }
+  updateSyncLabel();
+}
+function syncText(){ return Sync.mode === 'account' ? 'Progress is saved to your Claude account, so it follows you to other devices.' : 'Progress is saved in this browser on this device.'; }
+function updateSyncLabel(){ document.querySelectorAll('[data-sync]').forEach(el => el.textContent = syncText()); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && Sync.ref){ clearTimeout(Sync.timer); flushRemote(); } });
+
+/* ---------- progress logic ---------- */
+function addXP(n){ const t = today(); if (P.daily.date !== t) P.daily = {date:t, xp:0}; P.daily.xp += n; P.xp += n; }
+function gain(sess, n){ if (!n) return; addXP(n); if (sess) sess.xp += n; }
+function bumpStreak(){ const t = today(); if (P.streak.last === t) return; P.streak.count = (P.streak.last === addDays(t,-1)) ? P.streak.count + 1 : 1; P.streak.last = t; }
+function streakNow(){ const t = today(); return (P.streak.last === t || P.streak.last === addDays(t,-1)) ? P.streak.count : 0; }
+function xpToday(){ return P.daily.date === today() ? P.daily.xp : 0; }
+const INTERVALS = [0,1,3,7,14,30];
+function srs(key, ok){
+  const t = today(); const r = P.items[key] || {b:0, d:t, s:0, w:0};
+  r.s++; if (ok){ r.b = Math.min(r.b + 1, 5); r.d = addDays(t, INTERVALS[r.b]); } else { r.w++; r.b = 0; r.d = t; }
+  P.items[key] = r;
+}
+function levelDone(id){ return !!(P.levels[id] && P.levels[id].done); }
+function currentLevel(){ return LEVELS.find(l => !levelDone(l.id)) || null; }
+function earMin(){ return Math.floor((P.earMs || 0) / 60000); }
+function addEar(ms){ P.earMs = (P.earMs || 0) + Math.max(0, Math.min(ms, 45000)); }
+
+/* ---------- item index (keys are short ASCII ids) ---------- */
+const ITEM_INDEX = {};
+LEVELS.forEach(L => {
+  L.listen.forEach((d,i) => ITEM_INDEX[`l${L.id}_L_${i}`] = {L, kind:'listen', data:d});
+  L.read.forEach((d,i) => ITEM_INDEX[`l${L.id}_R_${i}`] = {L, kind:'read', data:d});
+  L.build.forEach((d,i) => ITEM_INDEX[`l${L.id}_B_${i}`] = {L, kind:'build', data:d});
+});
+function makeItem(key){
+  const ix = ITEM_INDEX[key]; if (!ix) return null;
+  const {L, kind, data} = ix;
+  if (kind === 'listen'){
+    if (Array.isArray(data)) return {kind, key, L, target:rnd(data), options:shuffle(data)};
+    return {kind, key, L, target:data.t, options:shuffle([data.t, ...data.d])};
+  }
+  return {kind, key, L, w:parseW(data)};
+}
+function itemsFor(L, kind, n){
+  const code = {listen:'L', read:'R', build:'B'}[kind];
+  const src = L[kind];
+  let idx = shuffle(src.map((_,i)=>i));
+  while (idx.length < n) idx = idx.concat(shuffle(src.map((_,i)=>i)));
+  return idx.slice(0,n).map(i => makeItem(`l${L.id}_${code}_${i}`));
+}
+function dueKeys(){ const t = today(); return Object.keys(P.items).filter(k => ITEM_INDEX[k] && P.items[k].d <= t); }
+function realListenWords(L){
+  const out = [];
+  L.listen.forEach(s => { (Array.isArray(s) ? s : [s.t]).forEach(w => { if (!out.includes(w)) out.push(w); }); });
+  return out;
+}
+function partnersOf(L, w){ const s = L.listen.find(x => Array.isArray(x) && x.includes(w)); return s ? s.filter(x => x !== w) : []; }
+
+/* ============================================================
+   AUDIO: device Italian voices (speech synthesis) + small sound effects
+   ============================================================ */
+const Voice = { supported: typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined', list: [], checked:false };
+function voiceId(v){ return v.voiceURI || v.name; }
+function loadVoices(){
+  if (!Voice.supported) { Voice.checked = true; return; }
+  let vs = []; try { vs = speechSynthesis.getVoices() || []; } catch(e){}
+  const it = vs.filter(v => /^it([-_]|$)/i.test(v.lang || ''));
+  const score = v => (/natural|neural|online|premium|enhanced/i.test(v.name) ? 4 : 0) + (/google/i.test(v.name) ? 2 : 0) + (/alice|federica|luca|elsa|isabella|diego|cosimo|paola|giuseppe|emma/i.test(v.name) ? 1 : 0);
+  it.sort((a,b) => score(b) - score(a));
+  const changed = it.map(voiceId).join('|') !== Voice.list.map(voiceId).join('|');
+  Voice.list = it;
+  if (changed){ if (SCREEN === 'settings') renderSettings(); else if (SCREEN === 'home') refreshVoiceBanner(); }
+}
+if (Voice.supported){
+  loadVoices();
+  try { speechSynthesis.addEventListener('voiceschanged', loadVoices); } catch(e){ speechSynthesis.onvoiceschanged = loadVoices; }
+  setTimeout(loadVoices, 600);
+}
+setTimeout(() => { loadVoices(); Voice.checked = true; if (SCREEN === 'home') refreshVoiceBanner(); }, 2200);
+function enabledVoices(){ const on = Voice.list.filter(v => !S.off.includes(voiceId(v))); return on.length ? on : Voice.list; }
+function voiceParams(vary){
+  const pool = enabledVoices();
+  let v = pool[0] || null, rate = S.rate, pitch = 1;
+  if (vary && S.vary){ if (pool.length > 1) v = rnd(pool); rate *= 0.9 + Math.random()*0.18; pitch = 0.9 + Math.random()*0.2; }
+  return {v, rate, pitch};
+}
+function sayP(text, p, slow){
+  return new Promise(res => {
+    if (!Voice.supported){ res(); return; }
+    try {
+      p = p || voiceParams(false);
+      const busy = speechSynthesis.speaking || speechSynthesis.pending;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = (p.v && p.v.lang) || 'it-IT';
+      if (p.v) u.voice = p.v;
+      u.rate = Math.max(0.5, Math.min(1.4, p.rate * (slow ? 0.66 : 1)));
+      u.pitch = p.pitch;
+      let done = false; const fin = () => { if (!done){ done = true; res(); } };
+      u.onend = fin; u.onerror = fin;
+      setTimeout(fin, 1200 + text.length * 170);
+      const go = () => { try { speechSynthesis.resume(); speechSynthesis.speak(u); } catch(e){ fin(); } };
+      busy ? setTimeout(go, 70) : go();
+    } catch(e){ res(); }
+  });
+}
+function player(text, p){
+  const big = h('button', {class:'play', 'aria-label':'Play the word (R)'}, icon('play'));
+  const slow = h('button', {class:'slow', 'aria-label':'Play slowly (S)'}, icon('slow'), 'Slow');
+  const play = (sl) => { big.classList.add('playing'); sayP(text, p, sl).then(() => big.classList.remove('playing')); };
+  big.addEventListener('click', () => play(false));
+  slow.addEventListener('click', () => play(true));
+  return {el: h('div', {class:'player'}, big, slow), play, big};
+}
+let actx = null;
+function fx(kind){
+  if (!S.fx) return;
+  try {
+    if (!actx){ const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; actx = new AC(); }
+    if (actx.state === 'suspended') actx.resume();
+    const t = actx.currentTime;
+    const tone = (f, at, dur, type='sine', vol=0.07) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t+at);
+      g.gain.exponentialRampToValueAtTime(vol, t+at+0.015); g.gain.exponentialRampToValueAtTime(0.0001, t+at+dur);
+      o.connect(g).connect(actx.destination); o.start(t+at); o.stop(t+at+dur+0.02);
+    };
+    if (kind === 'good'){ tone(660,0,.13); tone(990,.08,.2); }
+    else if (kind === 'bad'){ tone(210,0,.2,'triangle',.06); }
+    else if (kind === 'soft'){ tone(520,0,.12,'sine',.04); }
+    else if (kind === 'line'){ [523,659,784].forEach((f,i)=>tone(f,i*.08,.2)); }
+    else if (kind === 'win'){ [523,659,784,1047].forEach((f,i)=>tone(f,i*.11,.26)); }
+  } catch(e){}
+}
+function confetti(){
+  if (reduceMotion()) return;
+  const cv = $('#confetti'); const c = cv.getContext && cv.getContext('2d'); if (!c) return;
+  const dpr = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
+  cv.width = W*dpr; cv.height = H*dpr; cv.style.display = 'block';
+  const cs = getComputedStyle(document.documentElement);
+  const cols = ['--lemon','--vowel','--blue','--good'].map(v => cs.getPropertyValue(v).trim() || '#F4C430');
+  const parts = Array.from({length:140}, () => ({x:W/2 + (Math.random()-.5)*140, y:H*.32, vx:(Math.random()-.5)*10, vy:-Math.random()*10-3, r:Math.random()*6, vr:(Math.random()-.5)*.35, w:6+Math.random()*6, hh:8+Math.random()*8, col:rnd(cols)}));
+  const t0 = performance.now();
+  const step = t => {
+    c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,W,H);
+    parts.forEach(p => { p.vy += .3; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; c.save(); c.translate(p.x,p.y); c.rotate(p.r); c.fillStyle = p.col; c.fillRect(-p.w/2,-p.hh/2,p.w,p.hh); c.restore(); });
+    if (t - t0 < 2400) requestAnimationFrame(step); else { c.clearRect(0,0,W,H); cv.style.display = 'none'; }
+  };
+  requestAnimationFrame(step);
+}
+function announce(msg){ const l = $('#live'); l.textContent = ''; setTimeout(()=>{ l.textContent = msg; }, 30); }
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+const VIEW = $('#view');
+let SCREEN = 'home';
+function setView(name, ...nodes){
+  cleanup(); closeSheet();
+  try { if (Voice.supported) speechSynthesis.cancel(); } catch(e){}
+  SCREEN = name;
+  VIEW.replaceChildren(...nodes.flat().filter(Boolean));
+  window.scrollTo(0,0);
+  try { VIEW.focus({preventScroll:true}); } catch(e){}
+}
+
+function ring(frac){
+  const r = 6.5, c = 2*Math.PI*r, f = Math.max(0, Math.min(1, frac));
+  const s = h('span', {class:'ic'});
+  s.innerHTML = `<svg viewBox="0 0 18 18" aria-hidden="true" style="width:15px;height:15px"><circle cx="9" cy="9" r="${r}" fill="none" stroke="var(--line)" stroke-width="3"/><circle cx="9" cy="9" r="${r}" fill="none" stroke="${f>=1?'var(--good)':'var(--lemon-deep)'}" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(c*f).toFixed(2)} ${c.toFixed(2)}" transform="rotate(-90 9 9)"/></svg>`;
+  return s;
+}
+function renderTopbar(){
+  const st = streakNow(), xp = xpToday();
+  $('#topbar').replaceChildren(h('div', {class:'topbar-in'},
+    h('button', {class:'brand', onclick:renderHome, 'aria-label':"Suoni d'Italia, back to the journey"}, h('span', {}, 'Suoni d', h('span', {class:'apos'}, '’'), 'Italia')),
+    h('div', {class:'chips'},
+      h('span', {class:'chip', title:'Days in a row'}, icon('flame'), String(st), h('span', {class:'sr-only'}, ' day streak')),
+      h('span', {class:'chip xp', title:'XP today and your daily goal'}, ring(xp / S.goal), `${xp}/${S.goal}`, h('span', {class:'sr-only'}, ' XP today')),
+      h('button', {class:'iconbtn', 'aria-label':'Settings and voices', onclick:renderSettings}, icon('gear')))));
+}
+
+/* ---------- home ---------- */
+function greeting(cur){
+  const done = LEVELS.filter(l => levelDone(l.id)).length;
+  if (!done) return {it:'Benvenuto!', en:"Let's tour Italy one sound at a time. First stop: Venezia and its five vowels."};
+  if (!cur) return {it:'Che viaggio!', en:'All 12 stamps collected. A short review each day keeps your ear sharp.'};
+  if (xpToday() >= S.goal) return {it:'Obiettivo raggiunto!', en:"You hit today's goal. Anything more is a bonus."};
+  const st = streakNow();
+  if (st >= 2) return {it:`${st} giorni di fila!`, en:`${st} days in a row. Next stop: ${cur.city}.`};
+  return {it:`Si parte per ${cur.city}!`, en:`Next stop: ${cur.city} · ${cur.en}.`};
+}
+let voiceBannerSlot = null;
+function voiceBanner(){
+  if (!Voice.checked) return null;
+  if (!Voice.supported) return h('div', {class:'banner'}, h('b', {}, "This browser can't speak."), 'Open the app in Microsoft Edge, Chrome or Safari to hear the words.');
+  if (!Voice.list.length) return h('div', {class:'banner'}, h('b', {}, 'No Italian voice found on this device.'),
+    'Words may be read with an English accent. On Windows, add one in Settings > Time & language > Speech > Add voices > Italian, or open the app in Microsoft Edge, which includes natural Italian voices. On iPhone, go to Settings > Accessibility > Spoken Content > Voices > Italian.');
+  return null;
+}
+function refreshVoiceBanner(){ if (voiceBannerSlot) voiceBannerSlot.replaceChildren(voiceBanner() || ''); }
+
+function renderHome(){
+  renderTopbar();
+  const cur = currentLevel();
+  const g = greeting(cur);
+  const due = dueKeys().length;
+  const doneN = LEVELS.filter(l => levelDone(l.id)).length;
+  const startL = cur || LEVELS[LEVELS.length-1];
+  const startBtn = h('button', {class:'btn btn-primary btn-lg', onclick:() => startLesson(startL)},
+    icon('play'), h('span', {class:'two'}, h('span', {}, cur ? (doneN ? `Continue: ${cur.city}` : 'Start: Venezia') : 'Replay Palermo'), h('small', {}, `Tappa ${startL.id} · ${startL.en}`)));
+  const reviewBtn = doneN ? h('button', {class:'btn btn-lg', onclick:startReview},
+    icon('retry'), h('span', {class:'two'}, h('span', {}, due ? `Review ${due} ${due === 1 ? 'word' : 'words'}` : 'Practice mix'), h('small', {}, due ? 'Spaced review, due today' : 'Nothing due. Extra practice'))) : null;
+  voiceBannerSlot = h('div', {}, voiceBanner());
+
+  const ear = earMin();
+  const stats = h('div', {class:'stats'},
+    h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'Stamps'), h('div', {class:'val'}, String(doneN), h('small', {}, ' / 12'))),
+    h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'Ear training'), h('div', {class:'val'}, String(ear), h('small', {}, ' / 400 min')),
+      h('div', {class:'meter', title:'Listening gains level off around 400 minutes'}, h('span', {style:`width:${Math.min(100, ear/4).toFixed(1)}%`}))),
+    h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'Total XP'), h('div', {class:'val'}, String(P.xp))));
+
+  const loop = !doneN ? h('section', {class:'loop'}, h('h2', {class:'section-title'}, 'Every city, five steps'),
+    h('ol', {}, [
+      ['Impara', 'Learn one sound rule, with examples you can tap and hear.'],
+      ['Ascolta', 'Pick the word you hear, spoken by different voices.'],
+      ['Leggi', 'Read a word aloud yourself, then compare with the voice.'],
+      ['Costruisci', 'Build the word you hear from syllable tiles.'],
+      ['Gioca', 'Play tombola, fishing, sorting or clapping games.']
+    ].map(([a,b]) => h('li', {}, h('div', {}, h('b', {}, a), h('div', {class:'muted'}, b)))))) : null;
+
+  const diploma = P.diploma ? h('section', {class:'diploma'}, h('div', {class:'eyebrow'}, 'Diploma di pronuncia'), h('h2', {}, 'Tutte le tappe!'),
+    h('p', {class:'muted'}, `All 12 cities completed on ${new Date(P.diploma + 'T12:00:00').toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'})}. Keep reviewing until the ear-training meter reaches 400 minutes.`)) : null;
+
+  const road = h('div', {class:'road'});
+  setView('home',
+    h('section', {class:'hero'}, h('div', {class:'it'}, g.it), h('div', {class:'en'}, g.en)),
+    h('div', {class:'hero-actions'}, startBtn, reviewBtn),
+    voiceBannerSlot, stats, diploma, loop,
+    h('h2', {class:'section-title'}, 'Il tuo viaggio'),
+    h('p', {class:'muted', style:'margin:0'}, 'Twelve stops from Venezia to Palermo. Each stamp is one group of sounds.'),
+    road,
+    h('div', {class:'footer-links'},
+      h('button', {class:'btn', onclick:renderMethod}, 'How this method works'),
+      h('button', {class:'btn', onclick:renderSettings}, 'Settings and voices')),
+    h('p', {class:'sync', 'data-sync':''}, syncText()));
+  buildRoad(road, cur);
+}
+function buildRoad(road, cur){
+  const rows = LEVELS.map((L, i) => {
+    const done = levelDone(L.id), isCur = cur && cur.id === L.id, locked = !done && !isCur;
+    const st = (P.levels[L.id] || {}).stars || 0;
+    const btn = h('button', {class:'stop ' + (done ? 'is-done' : isCur ? 'is-current' : 'is-locked'), onclick:() => openLevelSheet(L),
+        'aria-label':`Stop ${L.id}, ${L.city}: ${L.en}. ${done ? st + ' stars' : isCur ? 'Next up' : 'Locked'}`},
+      h('span', {class:'stamp', style:`--rot:${[-7,5,-3,8,-5,4][i%6]}deg`}, done ? icon('check') : String(L.id), locked ? h('span', {class:'tiny'}, icon('lock')) : null),
+      h('span', {class:'stop-label'}, h('b', {}, L.city), h('small', {}, L.en), done ? starsEl(st) : null));
+    return {row: h('div', {class:'stop-row'}, btn), btn, L, done};
+  });
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'path'); svg.setAttribute('aria-hidden', 'true');
+  road.replaceChildren(svg, ...rows.map(r => r.row));
+  const layout = () => {
+    const W = road.clientWidth; if (!W) return;
+    const amp = Math.min(110, W * 0.24);
+    const pts = [];
+    rows.forEach((r, i) => {
+      const x = Math.round(Math.sin(i * 1.15) * amp);
+      const flip = x > 12;
+      r.btn.classList.toggle('flip', flip);
+      r.btn.style.left = r.btn.style.right = '';
+      if (flip){ r.btn.style.right = (W/2 - x - 37) + 'px'; r.btn.style.maxWidth = (W/2 + x + 37) + 'px'; }
+      else { r.btn.style.left = (W/2 + x - 37) + 'px'; r.btn.style.maxWidth = (W/2 - x + 37) + 'px'; }
+      pts.push([W/2 + x, i * 104 + 12 + 37]);
+    });
+    svg.setAttribute('viewBox', `0 0 ${W} ${rows.length * 104}`);
+    let html = '';
+    for (let i=0;i<pts.length-1;i++){
+      const [x1,y1] = pts[i], [x2,y2] = pts[i+1], my = (y1+y2)/2;
+      html += `<path class="seg${rows[i+1].done || (rows[i].done && cur && cur.id === rows[i+1].L.id) ? ' done' : ''}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
+    }
+    svg.innerHTML = html;
+  };
+  layout();
+  requestAnimationFrame(layout);
+  const onR = () => layout();
+  window.addEventListener('resize', onR);
+  CLEAN.push(() => window.removeEventListener('resize', onR));
+}
+
+/* ---------- level sheet ---------- */
+let sheetEl = null;
+function closeSheet(){ if (!sheetEl) return false; sheetEl.remove(); sheetEl = null; return true; }
+function openLevelSheet(L){
+  closeSheet();
+  const done = levelDone(L.id), cur = currentLevel(), isCur = cur && cur.id === L.id, locked = !done && !isCur;
+  const st = (P.levels[L.id] || {}).stars || 0;
+  const go = (opts) => { closeSheet(); startLesson(L, opts); };
+  const exs = L.learn[0].ex.slice(0,4).map(x => { const w = parseW(x); return h('button', {class:'ex', onclick:() => sayP(w.say)}, h('span', {class:'top'}, icon('speaker'), wordEl(w, {focus:L.focus}))); });
+  const actions = locked
+    ? [h('p', {class:'muted', style:'margin:0'}, `Finish ${cur ? cur.city : 'the stop before it'} to unlock this stop. If you already know the earlier sounds, you can start here.`),
+       h('button', {class:'btn btn-primary', onclick:() => go()}, 'Start here anyway')]
+    : [h('button', {class:'btn btn-primary', onclick:() => go()}, icon('play'), done ? 'Replay the lesson' : 'Start the lesson'),
+       done ? h('button', {class:'btn', onclick:() => go({only:'game'})}, 'Just the game') : null,
+       h('button', {class:'btn', onclick:() => go({only:'learn'})}, 'Read the rules')];
+  const sheet = h('div', {class:'sheet', role:'dialog', 'aria-modal':'true', 'aria-label':`${L.city}: ${L.en}`},
+    h('div', {class:'eyebrow'}, `Tappa ${L.id} · ${L.city}`), h('h2', {}, L.it), h('div', {class:'muted'}, L.en),
+    done ? starsEl(st) : null,
+    h('div', {class:'exs'}, exs),
+    h('div', {class:'sheet-actions'}, actions, h('button', {class:'btn btn-ghost', onclick:closeSheet}, 'Close')));
+  sheetEl = h('div', {class:'backdrop', onclick:e => { if (e.target === sheetEl) closeSheet(); }}, sheet);
+  $('#sheet-root').append(sheetEl);
+  const first = sheet.querySelector('.sheet-actions .btn'); if (first) first.focus();
+}
+
+/* ============================================================
+   LESSON RUNNER
+   ============================================================ */
+const STEP_NAMES = {learn:'Impara', listen:'Ascolta', read:'Leggi', build:'Costruisci', game:'Gioca'};
+function startLesson(L, opts={}){
+  const only = opts.only || null;
+  const steps = only ? [only] : ['learn','listen','read','build','game'];
+  const sess = {L, steps, i:0, good:0, total:0, xp:0, only, t0:Date.now()};
+  runStep(sess);
+}
+function lessonShell(sess){
+  const n = sess.steps.length;
+  const prog = h('div', {class:'progress', style:`--n:${n}`, 'aria-hidden':'true'}, sess.steps.map((s,i) => h('span', {class: i < sess.i ? 'on' : i === sess.i ? 'now' : ''})));
+  const tip = h('span', {class:'leave-tip', hidden:true}, 'Tap again to leave');
+  let armedT = 0;
+  const close = h('button', {class:'iconbtn', 'aria-label':'Leave the lesson'}, icon('close'));
+  close.addEventListener('click', () => {
+    if (close.classList.contains('armed')){ clearTimeout(armedT); try { speechSynthesis.cancel(); } catch(e){} renderHome(); return; }
+    close.classList.add('armed'); tip.hidden = false;
+    armedT = setTimeout(() => { close.classList.remove('armed'); tip.hidden = true; }, 2500);
+  });
+  const body = h('div', {class:'lesson-body'});
+  setView('lesson', h('div', {class:'lesson-top'}, close, tip, prog), body);
+  const now = prog.querySelector('.now');
+  return {body, kicker:'', setSub: f => { if (now) now.style.setProperty('--p', Math.max(4, Math.round(f*100)) + '%'); }};
+}
+function stepHead(kicker, title, sub){
+  return h('div', {class:'step-head'}, h('div', {class:'eyebrow'}, kicker), h('h1', {class:'step-title'}, title), sub ? h('p', {class:'step-sub'}, sub) : null);
+}
+function runStep(sess){
+  if (sess.i >= sess.steps.length) return finishLesson(sess);
+  const k = sess.steps[sess.i], L = sess.L;
+  const ctx = lessonShell(sess);
+  const base = sess.steps.length > 1 ? `Step ${sess.i+1} of ${sess.steps.length} · ${L.city}` : `${L.city} · ${L.en}`;
+  const next = (res={}) => { sess.good += res.good || 0; sess.total += res.total || 0; sess.i++; save(); runStep(sess); };
+  ctx.kicker = base;
+  if (k === 'learn') return stepLearn(ctx, L, next, !!sess.only);
+  if (k === 'game') return GAMES[L.game.type](ctx, L, sess, next, base);
+  const n = {listen:8, read:5, build:4}[k];
+  runQueue(ctx, itemsFor(L, k, n), sess, next, (j, N) => `${base} · ${j} of ${N}`);
+}
+function runQueue(ctx, items, sess, done, kicker){
+  const queue = items.filter(Boolean);
+  const N = queue.length; let finished = 0, good = 0, total = 0;
+  const next = () => {
+    if (!queue.length) return done({good, total});
+    const it = queue.shift(); const t0 = Date.now();
+    ctx.kicker = kicker(Math.min(finished + 1, N), N, it);
+    const R = it.kind === 'listen' ? renderListen : it.kind === 'build' ? renderBuild : renderRead;
+    R(ctx, it, (ok, o={}) => {
+      const graded = o.graded !== false;
+      if (it.kind !== 'read') addEar(Date.now() - t0);
+      if (!it.isRetry){ srs(it.key, ok); if (graded){ total++; if (ok) good++; } }
+      gain(sess, ok ? (it.isRetry ? 3 : graded ? 10 : 5) : (graded ? 0 : 2));
+      if (!ok && graded && !it.isRetry){ const again = makeItem(it.key) || it; again.isRetry = true; queue.push(again); }
+      else finished++;
+      ctx.setSub(finished / N);
+      save(); renderTopbar();
+      next();
+    });
+  };
+  next();
+}
+function feedback(ok, ph, lines, cont, o={}){
+  let fired = false; const go = () => { if (fired) return; fired = true; cont(); };
+  const btn = h('button', {class:'btn ' + (ok ? 'btn-good' : 'btn-primary'), onclick:go}, 'Continue');
+  const el = h('div', {class:'feedback ' + (ok ? 'good' : 'bad')},
+    h('div', {class:'fb-head'}, icon(ok ? 'check' : 'cross'), h('span', {class:'it'}, ph.it), h('span', {class:'en'}, ph.en)),
+    lines, h('div', {class:'fb-actions'}, btn));
+  KEYS = Object.assign({}, KEYS || {}, {Enter:go});
+  if (o.auto && !reduceMotion()){ el.classList.add('auto'); el.style.setProperty('--auto', o.auto + 'ms'); later(go, o.auto); }
+  announce(ph.it + ' ' + ph.en);
+  requestAnimationFrame(() => { try { btn.focus({preventScroll:true}); el.scrollIntoView({block:'nearest', behavior: reduceMotion() ? 'auto' : 'smooth'}); } catch(e){} });
+  return el;
+}
+function compareBtn(w, p, isTarget){
+  const pw = parseW(w);
+  return h('button', {class:'cmp' + (isTarget ? ' target' : ''), onclick:() => sayP(pw.say, p)},
+    icon('speaker'), h('span', {}, wordEl(pw, {dots:false}), h('small', {}, glossText(pw) || ' ')));
+}
+
+/* ---------- step: Impara ---------- */
+function stepLearn(ctx, L, next, alone){
+  const cards = L.learn; let i = 0;
+  const render = () => {
+    cleanup();
+    const c = cards[i];
+    const exs = (c.ex || []).map(x => { const w = parseW(x); return h('button', {class:'ex', onclick:() => sayP(w.say)},
+      h('span', {class:'top'}, icon('speaker'), wordEl(w, {focus:L.focus})), glossText(w) ? h('small', {}, glossText(w)) : null); });
+    const back = h('button', {class:'btn btn-ghost', disabled: i === 0, onclick:() => { if (i > 0){ i--; render(); } }}, 'Back');
+    const last = i === cards.length - 1;
+    const fwd = h('button', {class:'btn btn-primary', onclick:() => { if (!last){ i++; render(); } else next({}); }}, last ? (alone ? 'Done' : 'Start practicing') : 'Next');
+    ctx.body.replaceChildren(
+      stepHead(ctx.kicker, 'Impara', `${L.it} · ${L.en}`),
+      h('article', {class:'card'}, h('div', {class:'eyebrow'}, `Rule ${i+1} of ${cards.length} · tap a word to hear it`), h('h3', {}, c.t), h('p', {}, c.b),
+        h('div', {class:'exs'}, exs),
+        c.tip ? h('div', {class:'note'}, c.tip) : null),
+      h('div', {class:'dots', 'aria-hidden':'true'}, cards.map((_,k) => h('span', {class: k === i ? 'on' : ''}))),
+      h('div', {class:'actionbar'}, back, fwd));
+    KEYS = {ArrowRight:() => fwd.click(), ArrowLeft:() => back.click(), Enter:() => fwd.click()};
+    ctx.setSub((i+1) / cards.length);
+  };
+  render();
+}
+
+/* ---------- step: Ascolta ---------- */
+function renderListen(ctx, it, done){
+  cleanup();
+  const p = voiceParams(true);
+  const pl = player(it.target, p);
+  let answered = false;
+  const fb = h('div', {});
+  const tgt = parseW(it.target).text;
+  const opts = it.options.map((w,i) => h('button', {class:'opt', onclick:() => choose(i)}, h('span', {class:'k', 'aria-hidden':'true'}, String(i+1)), wordEl(w, {dots:false})));
+  ctx.body.replaceChildren(
+    stepHead(ctx.kicker, 'Ascolta', it.isRetry ? "Let's hear that one again. Which word is it?" : 'Which word do you hear? Press play as often as you like.'),
+    pl.el, h('div', {class:'opts'}, opts), fb);
+  later(() => pl.play(false), 380);
+  KEYS = {r:() => pl.play(false), s:() => pl.play(true)};
+  it.options.forEach((_,i) => KEYS[String(i+1)] = () => choose(i));
+  function choose(i){
+    if (answered) return; answered = true;
+    const chosen = parseW(it.options[i]); const ok = chosen.text === tgt;
+    opts.forEach((b,j) => { b.disabled = true; const isT = parseW(it.options[j]).text === tgt; b.classList.add(isT ? 'good' : j === i ? 'bad' : 'dim'); });
+    fx(ok ? 'good' : 'bad');
+    const tw = parseW(it.target);
+    if (ok) fb.replaceChildren(feedback(true, phrase(PRAISE), [h('p', {class:'fb-line'}, wordEl(tw, {dots:false}), glossText(tw) ? ` · ${glossText(tw)}` : '')], () => done(true), {auto:1700}));
+    else fb.replaceChildren(feedback(false, phrase(OOPS), [
+      h('p', {class:'fb-line'}, 'The voice said ', h('b', {}, tw.text), '. Listen to both and compare:'),
+      h('div', {class:'compare'}, compareBtn(it.target, p, true), compareBtn(it.options[i], p, false))], () => done(false)));
+  }
+}
+
+/* ---------- step: Leggi ---------- */
+function renderRead(ctx, it, done){
+  cleanup();
+  const w = it.w, p = voiceParams(false);
+  let heard = false, fired = false;
+  const label = h('span', {}, 'Hear it');
+  const hear = h('button', {class:'btn btn-primary btn-lg', onclick:() => say(false)}, icon('play'), label);
+  const rate = h('div', {class:'rate center', hidden:true},
+    h('p', {class:'muted'}, 'Did yours sound the same?'),
+    h('div', {class:'rate-btns'},
+      h('button', {class:'btn', onclick:() => fin(false)}, icon('retry'), 'Not yet'),
+      h('button', {class:'btn btn-good', onclick:() => fin(true)}, icon('check'), 'Got it')));
+  function say(slow){ sayP(w.say, p, slow); if (!heard){ heard = true; rate.hidden = false; label.textContent = 'Hear again'; } }
+  function fin(ok){ if (fired) return; fired = true; fx(ok ? 'good' : 'soft'); done(ok, {graded:false}); }
+  ctx.body.replaceChildren(
+    stepHead(ctx.kicker, 'Leggi', 'Read the word out loud first, syllable by syllable. Then listen and compare.'),
+    h('div', {class:'readcard'}, wordEl(w, {focus:it.L.focus}), glossText(w) ? h('div', {class:'gloss'}, glossText(w)) : null),
+    h('div', {class:'read-actions'}, hear, h('button', {class:'slow', onclick:() => say(true)}, icon('slow'), 'Slow')),
+    rate);
+  KEYS = {r:() => say(false), s:() => say(true), '1':() => heard && fin(false), '2':() => heard && fin(true)};
+}
+
+/* ---------- step: Costruisci ---------- */
+const CONFUSE = [['schi','sci'],['sche','sce'],['sci','schi'],['sce','sche'],['sca','scia'],['chi','ci'],['che','ce'],['ghi','gi'],['ghe','ge'],
+  ['cia','ca'],['cio','co'],['ciu','cu'],['gia','ga'],['gio','go'],['giu','gu'],['gli','li'],['gn','n'],['quo','cuo'],['cuo','quo'],['qua','cua'],['que','cue'],
+  ['zz','ss'],['z','s'],['rr','r'],['à','a'],['è','e'],['é','e'],['ò','o'],['ù','u'],['ì','i'],['ce','che'],['ci','chi'],['ge','ghe'],['gi','ghi'],
+  ['b','p'],['p','b'],['d','t'],['t','d'],['v','f'],['f','v'],['g','c'],['c','g'],['r','l'],['l','r'],['m','n'],['n','m'],['o','a'],['a','o'],['e','i'],['i','e'],['u','o']];
+function makeTiles(w, L){
+  const syl = w.syl.map(s => s.toLowerCase());
+  const correct = new Set(syl), traps = new Set();
+  syl.forEach((s,i) => {
+    const nx = syl[i+1];
+    if (nx && /[bcdfglmnprstvz]$/.test(s) && (nx[0] === s[s.length-1] || (s.endsWith('c') && nx[0] === 'q'))) traps.add(s.slice(0,-1));
+    for (const [a,b] of CONFUSE){ if (s.includes(a)){ traps.add(s.replace(a,b)); break; } }
+  });
+  const trapList = shuffle([...traps].filter(t => t && !correct.has(t)));
+  const others = shuffle([...new Set(L.build.flatMap(b => parseW(b).syl.map(x => x.toLowerCase())))].filter(x => !correct.has(x) && !traps.has(x)));
+  const extra = Math.min(3, Math.max(2, 7 - syl.length));
+  const chosen = trapList.slice(0, Math.min(2, extra));
+  while (chosen.length < extra && others.length) chosen.push(others.shift());
+  return shuffle([...syl.map(s => ({s})), ...chosen.map(s => ({s}))]);
+}
+function renderBuild(ctx, it, done){
+  cleanup();
+  const w = it.w, p = voiceParams(true), pl = player(w.say, p);
+  const tiles = makeTiles(w, it.L);
+  const slots = w.syl.map(() => null);
+  let answered = false;
+  const slotWrap = h('div', {class:'slots'});
+  const slotEls = slots.map((_,i) => h('button', {class:'slot', 'aria-label':`Slot ${i+1}`, onclick:() => unplace(i)}));
+  slotWrap.append(...slotEls);
+  const tileEls = tiles.map(t => h('button', {class:'tile', onclick:() => place(t)}, wordEl(t.s, {dots:false})));
+  const check = h('button', {class:'btn btn-primary', disabled:true, onclick:checkIt}, icon('check'), 'Check');
+  const fb = h('div', {});
+  function place(t){ if (answered || slots.includes(t)) return; const i = slots.indexOf(null); if (i < 0) return; slots[i] = t; draw(); }
+  function unplace(i){ if (answered || !slots[i]) return; slots[i] = null; draw(); }
+  function draw(){
+    slotEls.forEach((el,i) => { el.replaceChildren(slots[i] ? wordEl(slots[i].s, {dots:false}) : ''); el.classList.toggle('filled', !!slots[i]); });
+    tileEls.forEach((el,k) => el.classList.toggle('used', slots.includes(tiles[k])));
+    check.disabled = slots.includes(null);
+  }
+  function checkIt(){
+    if (answered || slots.includes(null)) return; answered = true;
+    const built = slots.map(s => s.s).join('');
+    const ok = built === w.text.toLowerCase();
+    slotWrap.classList.add(ok ? 'good' : 'bad'); check.disabled = true; tileEls.forEach(t => t.disabled = true);
+    fx(ok ? 'good' : 'bad');
+    if (ok) fb.replaceChildren(feedback(true, phrase(PRAISE), [h('p', {class:'fb-line'}, wordEl(w), glossText(w) ? ` · ${glossText(w)}` : '')], () => done(true), {auto:1700}));
+    else fb.replaceChildren(feedback(false, phrase(OOPS), [
+      h('p', {class:'fb-line'}, 'The word is ', wordEl(w), '. You built ', h('b', {}, built), '.'),
+      h('div', {class:'compare'}, compareBtn(w, p, true), compareBtn(glossOf(built) ? built : '~' + built, p, false))], () => done(false)));
+  }
+  ctx.body.replaceChildren(stepHead(ctx.kicker, 'Costruisci', 'Listen, then tap the syllables in order. Tap a slot to take a syllable back.'),
+    pl.el, slotWrap, h('div', {class:'tiles'}, tileEls), h('div', {class:'actionrow'}, check), fb);
+  later(() => pl.play(false), 380);
+  KEYS = {r:() => pl.play(false), s:() => pl.play(true), Enter:checkIt, Backspace:() => { for (let i=slots.length-1;i>=0;i--) if (slots[i]){ unplace(i); break; } }};
+}
+
+/* ============================================================
+   GAMES
+   ============================================================ */
+const GAMES = { tombola:gameTombola, fish:gameFish, sort:gameSort, stress:gameStress };
+function gameEnd(ctx, title, msg, good, total, done){
+  const btn = h('button', {class:'btn btn-primary', onclick:() => done({good, total})}, 'Continue');
+  return h('div', {class:'feedback good', style:'text-align:center'},
+    h('div', {class:'tbanner'}, h('div', {class:'big'}, title)),
+    h('p', {class:'fb-line'}, msg, ` ${good} of ${total} on the first try.`),
+    h('div', {class:'fb-actions', style:'justify-content:center'}, btn));
+}
+
+function gameTombola(ctx, L, sess, done, base){
+  cleanup();
+  const words = [];
+  for (const s of shuffle(L.listen.filter(Array.isArray))){ for (const w of shuffle(s)) if (!words.includes(w) && words.length < 9) words.push(w); if (words.length >= 9) break; }
+  for (const r of shuffle(L.read)){ if (words.length >= 9) break; const t = parseW(r).text; if (!words.includes(t)) words.push(t); }
+  const grid = shuffle(words), calls = shuffle(grid);
+  const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  let ci = 0, first = 0, missed = false, busy = false, t0 = Date.now(), cp = voiceParams(true);
+  const marked = new Set(), lines = new Set();
+  const big = h('button', {class:'play', 'aria-label':'Hear the call (R)'}, icon('play'));
+  const play = sl => { big.classList.add('playing'); sayP(calls[ci], cp, sl).then(() => big.classList.remove('playing')); };
+  big.addEventListener('click', () => play(false));
+  const lbl = h('span', {class:'call-lbl'});
+  const banner = h('div', {class:'tbanner', 'aria-live':'polite'});
+  const endSlot = h('div', {});
+  const cells = grid.map((w,i) => h('button', {class:'cell', onclick:() => tap(i)}, wordEl(w, {dots:false})));
+  const upd = () => lbl.textContent = `Call ${Math.min(ci+1, 9)} of 9`;
+  function tap(i){
+    if (busy || ci >= calls.length || marked.has(i)) return;
+    const w = grid[i];
+    if (w === calls[ci]){
+      marked.add(i); cells[i].classList.add('marked'); cells[i].disabled = true;
+      addEar(Date.now() - t0); if (!missed) first++; gain(sess, missed ? 3 : 10);
+      let newLine = false;
+      LINES.forEach((ln,k) => { if (!lines.has(k) && ln.every(x => marked.has(x))){ lines.add(k); newLine = true; ln.forEach(x => cells[x].classList.add('line')); } });
+      ci++; missed = false;
+      if (ci >= calls.length){ fx('win'); confetti(); banner.replaceChildren(); endSlot.replaceChildren(gameEnd(ctx, 'Tombola!', 'Full card!', first, 9, done)); save(); return; }
+      if (newLine){ fx('line'); banner.replaceChildren(h('span', {class:'big'}, lines.size === 1 ? 'Terno!' : 'Un altro terno!'), h('div', {class:'muted'}, 'Three in a row.')); }
+      else { fx('good'); banner.replaceChildren(h('span', {class:'muted'}, phrase(PRAISE).it)); }
+      busy = true; upd();
+      later(() => { busy = false; cp = voiceParams(true); t0 = Date.now(); play(false); }, 950);
+    } else {
+      missed = true; fx('bad');
+      cells[i].classList.add('nope'); later(() => cells[i].classList.remove('nope'), 450);
+      const g = glossText(parseW(w));
+      banner.replaceChildren(h('span', {}, 'That one is ', h('b', {}, w), g ? ` (${g})` : '', '. Listen to the call again.'));
+      const g0 = GEN; sayP(w, voiceParams(false)).then(() => { if (g0 === GEN) later(() => play(false), 300); });
+    }
+  }
+  upd();
+  ctx.body.replaceChildren(stepHead(base, 'Tombola', 'Listen to the caller and mark the word on your card. Three in a row is a terno. Fill the whole card to win.'),
+    h('div', {class:'caller'}, big, h('button', {class:'slow', onclick:() => play(true)}, icon('slow'), 'Slow'), lbl),
+    h('div', {class:'tcard'}, cells), banner, endSlot);
+  later(() => play(false), 400);
+  KEYS = {r:() => play(false), s:() => play(true)};
+}
+
+function gameFish(ctx, L, sess, done, base){
+  cleanup();
+  const pool = realListenWords(L), ROUNDS = 8;
+  let order = shuffle(pool); while (order.length < ROUNDS) order = order.concat(shuffle(pool));
+  let r = 0, good = 0, missed = false, busy = false, target = '', cp = null, fish = [], raf = 0, last = 0, t0 = 0;
+  const still = reduceMotion();
+  const sea = h('div', {class:'sea', role:'group', 'aria-label':'Fish carrying words'});
+  const lbl = h('span', {class:'call-lbl'});
+  const big = h('button', {class:'play', 'aria-label':'Hear the word (R)'}, icon('play'));
+  const play = sl => { big.classList.add('playing'); sayP(target, cp, sl).then(() => big.classList.remove('playing')); };
+  big.addEventListener('click', () => play(false));
+  const msg = h('div', {class:'tbanner', 'aria-live':'polite'});
+  const endSlot = h('div', {});
+  function round(){
+    target = order[r]; cp = voiceParams(true); missed = false; busy = false; t0 = Date.now();
+    const words = [target, ...partnersOf(L, target)];
+    for (const w of shuffle(pool)){ if (words.length >= 4) break; if (!words.includes(w)) words.push(w); }
+    const W = sea.clientWidth || 340, H = sea.clientHeight || 300;
+    sea.replaceChildren();
+    fish = shuffle(words.slice(0,4)).map((w,i) => {
+      const dir = i % 2 ? -1 : 1;
+      const el = h('button', {class:'fish' + (dir < 0 ? ' left' : '')}, dir < 0 ? h('span', {class:'eye'}) : null, wordEl(w, {dots:false}), dir > 0 ? h('span', {class:'eye'}) : null);
+      const f = {w, el, dir, x:0, y: 18 + i * ((H - 36) / 4), speed: 34 + Math.random()*38, caught:false, fw:0};
+      el.addEventListener('click', () => tap(f));
+      sea.append(el);
+      return f;
+    });
+    fish.forEach((f,i) => { f.fw = f.el.offsetWidth; f.x = still ? (i % 2 ? W - f.fw - 22 : 22) : Math.random() * Math.max(10, W - f.fw); f.el.style.transform = `translate(${f.x}px,${f.y}px)`; });
+    lbl.textContent = `Fish ${r+1} of ${ROUNDS}`;
+    msg.replaceChildren(h('span', {class:'muted'}, 'Catch the fish that says the word you hear.'));
+    later(() => play(false), 380);
+  }
+  function frame(t){
+    const dt = last ? Math.min(0.05, (t - last) / 1000) : 0; last = t;
+    const W = sea.clientWidth;
+    for (const f of fish){
+      if (f.caught) continue;
+      if (!still){ f.x += f.dir * f.speed * dt; if (f.dir > 0 && f.x > W + 16) f.x = -f.fw - 16; if (f.dir < 0 && f.x < -f.fw - 16) f.x = W + 16; }
+      f.el.style.transform = `translate(${f.x}px,${f.y}px)`;
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  function tap(f){
+    if (busy || f.caught) return;
+    if (f.w === target){
+      busy = true; f.caught = true; f.el.classList.add('caught'); f.el.style.transform = `translate(${f.x}px,${f.y - 90}px)`;
+      addEar(Date.now() - t0); if (!missed) good++; gain(sess, missed ? 3 : 10); fx('good');
+      const g = glossText(parseW(target));
+      msg.replaceChildren(h('span', {}, h('b', {}, phrase(PRAISE).it), ' ', target, g ? ` · ${g}` : ''));
+      r++;
+      if (r >= ROUNDS){ later(() => { cancelAnimationFrame(raf); fx('win'); confetti(); msg.replaceChildren(); endSlot.replaceChildren(gameEnd(ctx, 'Che pesca!', 'What a catch!', good, ROUNDS, done)); save(); }, 650); }
+      else later(round, 900);
+    } else {
+      missed = true; fx('bad'); f.el.classList.add('nope'); later(() => f.el.classList.remove('nope'), 600);
+      const g = glossText(parseW(f.w));
+      msg.replaceChildren(h('span', {}, 'That fish says ', h('b', {}, f.w), g ? ` (${g})` : '', '. Listen again.'));
+      const g0 = GEN; sayP(f.w, voiceParams(false)).then(() => { if (g0 === GEN) later(() => play(false), 300); });
+    }
+  }
+  ctx.body.replaceChildren(stepHead(base, 'Pesca le parole', 'Word fishing: hear a word, then tap the fish that carries it.'),
+    h('div', {class:'caller'}, big, h('button', {class:'slow', onclick:() => play(true)}, icon('slow'), 'Slow'), lbl),
+    sea, msg, endSlot);
+  CLEAN.push(() => cancelAnimationFrame(raf));
+  requestAnimationFrame(() => { round(); raf = requestAnimationFrame(frame); });
+  KEYS = {r:() => play(false), s:() => play(true)};
+}
+
+function gameSort(ctx, L, sess, done, base){
+  const g = L.game, items = pick(g.items, 12); let i = 0, good = 0;
+  const one = () => {
+    cleanup();
+    if (i >= items.length){
+      ctx.body.replaceChildren(stepHead(base, 'Smista', g.q), gameEnd(ctx, good >= 10 ? 'Bravissimi tutti!' : 'Fatto!', 'Sorting done.', good, items.length, done));
+      fx('win'); if (good >= 9) confetti(); return;
+    }
+    const [word, ans] = items[i], w = parseW(word), p = voiceParams(g.mode === 'hear'), t0 = Date.now();
+    let answered = false;
+    const fb = h('div', {});
+    let pl = null;
+    const card = g.mode === 'see' ? h('div', {class:'sortcard'}, wordEl(w, {plain:true, dots:false})) : (pl = player(w.say, p), h('div', {class:'sortcard'}, pl.el));
+    const bks = g.buckets.map(([b,s],k) => h('button', {class:'bucket', onclick:() => choose(k)}, h('span', {class:'k', 'aria-hidden':'true'}, k === 0 ? '←' : '→'), h('b', {}, b), h('small', {}, s)));
+    function choose(k){
+      if (answered) return; answered = true;
+      const ok = k === ans;
+      bks.forEach((b,j) => { b.disabled = true; b.classList.add(j === ans ? 'good' : j === k ? 'bad' : 'dim'); });
+      fx(ok ? 'good' : 'bad'); sayP(w.say, p);
+      addEar(Date.now() - t0); if (ok){ good++; gain(sess, 10); }
+      const line = h('p', {class:'fb-line'}, wordEl(w, {focus:L.focus, dots:false}), ' → ', h('b', {}, g.buckets[ans][0]), ` (${g.buckets[ans][1]})`, glossText(w) ? ` · ${glossText(w)}` : '');
+      fb.replaceChildren(feedback(ok, ok ? phrase(PRAISE) : phrase(OOPS), [line], () => { i++; one(); }, ok ? {auto:1500} : {}));
+    }
+    ctx.body.replaceChildren(stepHead(`${base} · ${i+1} of ${items.length}`, 'Smista', g.q), card, h('div', {class:'buckets'}, bks), fb);
+    if (pl) later(() => pl.play(false), 380);
+    KEYS = {ArrowLeft:() => choose(0), ArrowRight:() => choose(1), '1':() => choose(0), '2':() => choose(1), r:() => pl ? pl.play(false) : sayP(w.say, p)};
+    ctx.setSub(i / items.length);
+  };
+  one();
+}
+
+function gameStress(ctx, L, sess, done, base){
+  const items = pick(L.game.pool, 10); let i = 0, good = 0;
+  const one = () => {
+    cleanup();
+    if (i >= items.length){
+      ctx.body.replaceChildren(stepHead(base, 'Batti le mani', 'Clap on the stressed syllable.'), gameEnd(ctx, 'Che ritmo!', 'What rhythm!', good, items.length, done));
+      fx('win'); if (good >= 8) confetti(); return;
+    }
+    const w = parseW(items[i]), p = voiceParams(true), pl = player(w.say, p), t0 = Date.now();
+    let answered = false;
+    const fb = h('div', {});
+    const btns = w.syl.map((s,k) => h('button', {class:'sylbtn', onclick:() => choose(k)}, h('span', {class:'k', 'aria-hidden':'true'}, String(k+1)), wordEl(s, {dots:false})));
+    function choose(k){
+      if (answered) return; answered = true;
+      const ok = k === w.stress;
+      btns.forEach((b,j) => { b.disabled = true; b.classList.add(j === w.stress ? 'good' : j === k ? 'bad' : 'dim'); });
+      fx(ok ? 'good' : 'bad'); addEar(Date.now() - t0); if (ok){ good++; gain(sess, 10); }
+      fb.replaceChildren(feedback(ok, ok ? phrase(PRAISE) : phrase(OOPS), [h('p', {class:'fb-line'}, wordEl(w), ' · stress on ', h('b', {}, w.syl[w.stress].toUpperCase()), glossText(w) ? ` · ${glossText(w)}` : ''),
+        h('div', {class:'compare'}, compareBtn(w, p, true))], () => { i++; one(); }, ok ? {auto:1500} : {}));
+    }
+    ctx.body.replaceChildren(stepHead(`${base} · ${i+1} of ${items.length}`, 'Batti le mani', 'Clap game: listen, then tap the syllable that sounds strongest.'),
+      pl.el, h('div', {class:'sylrow'}, btns), h('span', {class:'clap', 'aria-hidden':'true'}, 'clap… clap… CLAP!'), fb);
+    later(() => pl.play(false), 380);
+    KEYS = {r:() => pl.play(false), s:() => pl.play(true)};
+    w.syl.forEach((_,k) => KEYS[String(k+1)] = () => choose(k));
+    ctx.setSub(i / items.length);
+  };
+  one();
+}
+
+/* ============================================================
+   RESULTS & REVIEW
+   ============================================================ */
+function finishLesson(sess){
+  const L = sess.L;
+  if (sess.only === 'learn'){ renderHome(); return; }
+  const acc = sess.total ? sess.good / sess.total : 1;
+  const stars = acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1;
+  const firstTime = !levelDone(L.id);
+  const prev = P.levels[L.id] || {};
+  if (!sess.only){ P.levels[L.id] = {done:true, stars:Math.max(prev.stars || 0, stars), plays:(prev.plays || 0) + 1}; P.lessons = (P.lessons || 0) + 1; gain(sess, 20); }
+  else gain(sess, 5);
+  bumpStreak();
+  let diplomaNow = false;
+  if (!sess.only && !P.diploma && LEVELS.every(l => levelDone(l.id))){ P.diploma = today(); diplomaNow = true; }
+  save(); renderTopbar();
+  const nextL = LEVELS.find(l => l.id === L.id + 1);
+  const head = !sess.only ? (stars === 3 ? ['Perfetto!', 'A perfect stamp.'] : stars === 2 ? ['Molto bene!', 'Very good. Replay any time for the third star.'] : ['Fatto!', 'Stamp earned. These sounds will come back in your reviews.']) : ['Bel gioco!', 'Nice game.'];
+  const actions = [];
+  if (!sess.only && nextL) actions.push(h('button', {class:'btn btn-primary btn-lg', onclick:() => startLesson(nextL)}, icon('play'), h('span', {class:'two'}, h('span', {}, `Next: ${nextL.city}`), h('small', {}, nextL.en))));
+  actions.push(h('button', {class:'btn btn-lg', onclick:renderHome}, 'Back to the journey'));
+  setView('result', h('section', {class:'result'},
+    h('div', {class:'bigstamp'}, h('span', {class:'n'}, `Tappa ${L.id}`), h('span', {class:'city'}, L.city), h('span', {class:'n'}, today().split('-').reverse().join('.'))),
+    !sess.only ? starsEl(stars, true) : null,
+    h('h1', {}, head[0]), h('p', {class:'muted', style:'margin:4px 0 0'}, head[1]),
+    firstTime && !sess.only && nextL && !levelDone(nextL.id) ? h('p', {style:'margin:8px 0 0'}, h('b', {}, nextL.city), ` is now unlocked (${nextL.en}).`) : null,
+    diplomaNow ? h('p', {style:'margin:8px 0 0'}, h('b', {}, 'Diploma! '), 'You finished all twelve cities.') : null,
+    h('div', {class:'statgrid'},
+      h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'First try'), h('div', {class:'val'}, sess.total ? Math.round(acc*100) + '%' : '–')),
+      h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'XP'), h('div', {class:'val'}, '+' + sess.xp)),
+      h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'Ear training'), h('div', {class:'val'}, String(earMin()), h('small', {}, ' min')))),
+    h('div', {class:'result-actions'}, actions)));
+  fx('win');
+  if (stars >= 2 || firstTime) setTimeout(confetti, 350);
+}
+
+function startReview(){
+  let keys = dueKeys(), practice = false;
+  if (!keys.length){ practice = true; keys = Object.keys(ITEM_INDEX).filter(k => levelDone(ITEM_INDEX[k].L.id) && ITEM_INDEX[k].kind !== 'read'); }
+  if (!keys.length) return;
+  keys.sort((a,b) => ((P.items[a] || {}).b ?? 9) - ((P.items[b] || {}).b ?? 9) || ((P.items[a] || {}).d || '').localeCompare((P.items[b] || {}).d || ''));
+  const take = practice ? pick(keys, 12) : shuffle(keys.slice(0, 15));
+  const sess = {review:true, steps:['review'], i:0, good:0, total:0, xp:0};
+  const ctx = lessonShell(sess);
+  runQueue(ctx, take.map(makeItem), sess, res => { sess.good = res.good; sess.total = res.total; finishReview(sess, practice); },
+    (n, N, it) => `${practice ? 'Practice' : 'Ripasso'} · ${n} of ${N} · ${it.L.city}`);
+}
+function finishReview(sess, practice){
+  gain(sess, 15); bumpStreak(); P.reviews = (P.reviews || 0) + 1; save(); renderTopbar();
+  const acc = sess.total ? sess.good / sess.total : 1;
+  const left = dueKeys().length;
+  setView('result', h('section', {class:'result'},
+    h('div', {class:'bigstamp review'}, h('span', {class:'n'}, practice ? 'Pratica' : 'Ripasso'), h('span', {class:'city'}, 'Fatto'), h('span', {class:'n'}, today().split('-').reverse().join('.'))),
+    h('h1', {}, acc >= 0.8 ? 'Che orecchio!' : 'Piano piano.'),
+    h('p', {class:'muted', style:'margin:4px 0 0'}, acc >= 0.8 ? 'Your ear is getting sharper.' : 'Each miss comes back soon, so it sticks.'),
+    h('div', {class:'statgrid'},
+      h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'First try'), h('div', {class:'val'}, sess.total ? Math.round(acc*100) + '%' : '–')),
+      h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'XP'), h('div', {class:'val'}, '+' + sess.xp)),
+      h('div', {class:'stat'}, h('div', {class:'eyebrow'}, 'Still due'), h('div', {class:'val'}, String(left)))),
+    h('div', {class:'result-actions'},
+      left ? h('button', {class:'btn btn-primary btn-lg', onclick:startReview}, icon('retry'), 'Review more') : null,
+      h('button', {class:'btn btn-lg', onclick:renderHome}, 'Back to the journey'))));
+  fx('win'); if (acc >= 0.8) setTimeout(confetti, 300);
+}
+
+/* ============================================================
+   SETTINGS & METHOD
+   ============================================================ */
+let resetArmed = false;
+function renderSettings(){
+  renderTopbar();
+  const voices = Voice.list;
+  const voiceRows = voices.length ? voices.map((v, i) => {
+    const id = 'v' + i;
+    const cb = h('input', {type:'checkbox', class:'switch', id, checked: !S.off.includes(voiceId(v)), 'aria-label':`Use ${v.name}`});
+    cb.addEventListener('change', () => { const k = voiceId(v); S.off = cb.checked ? S.off.filter(x => x !== k) : [...S.off, k]; saveSettings(); });
+    return h('div', {class:'row'}, h('label', {class:'grow', for:id}, h('b', {}, v.name), h('small', {}, `${v.lang}${v.localService === false ? ' · online voice' : ''}`)),
+      h('button', {class:'slow', onclick:() => sayP('Ciao! Questa è la mia voce.', {v, rate:S.rate, pitch:1})}, icon('play'), 'Test'), cb);
+  }) : [h('div', {class:'row'}, h('div', {class:'grow'}, h('b', {}, Voice.checked ? 'No Italian voices found' : 'Looking for voices…'),
+      h('small', {}, 'On Windows: Settings > Time & language > Speech > Add voices > Italian, or use Microsoft Edge. On iPhone: Settings > Accessibility > Spoken Content > Voices > Italian.')))];
+  const rateVal = h('b', {}, S.rate.toFixed(2) + '×');
+  const rate = h('input', {type:'range', id:'rate', min:'0.6', max:'1.1', step:'0.05', value:String(S.rate), 'aria-label':'Speaking speed'});
+  rate.addEventListener('input', () => { S.rate = Number(rate.value); rateVal.textContent = S.rate.toFixed(2) + '×'; saveSettings(); });
+  rate.addEventListener('change', () => sayP('Buongiorno, come stai?'));
+  const sw = (id, key, label, sub) => { const cb = h('input', {type:'checkbox', class:'switch', id, checked:!!S[key]}); cb.addEventListener('change', () => { S[key] = cb.checked; saveSettings(); });
+    return h('div', {class:'row'}, h('label', {class:'grow', for:id}, h('b', {}, label), h('small', {}, sub)), cb); };
+  const goal = h('select', {id:'goal', 'aria-label':'Daily XP goal'}, [50,100,150,250].map(n => h('option', {value:String(n), selected: S.goal === n}, `${n} XP`)));
+  goal.addEventListener('change', () => { S.goal = Number(goal.value); saveSettings(); renderTopbar(); });
+  const resetBtn = h('button', {class:'btn', style:'border-color:var(--bad);color:var(--bad);box-shadow:0 3px 0 var(--bad)'}, resetArmed ? 'Tap again to erase everything' : 'Reset all progress');
+  resetBtn.addEventListener('click', () => {
+    if (!resetArmed){ resetArmed = true; resetBtn.textContent = 'Tap again to erase everything'; setTimeout(() => { resetArmed = false; if (resetBtn.isConnected) resetBtn.textContent = 'Reset all progress'; }, 4000); return; }
+    resetArmed = false; P = freshProgress(); save(); renderHome();
+  });
+  setView('settings',
+    h('button', {class:'btn btn-ghost', style:'margin-top:10px;padding-left:0', onclick:renderHome}, '← Back to the journey'),
+    h('h1', {class:'page-title'}, 'Settings and voices'),
+    h('h2', {class:'section-title'}, 'Italian voices on this device'),
+    h('p', {class:'muted', style:'margin:0'}, 'Hearing several voices trains your ear faster, so the listening games rotate through every voice switched on here.'),
+    h('div', {class:'list'}, voiceRows),
+    h('h2', {class:'section-title'}, 'Listening'),
+    h('div', {class:'list'},
+      h('div', {class:'row', style:'flex-wrap:wrap'}, h('label', {class:'grow', for:'rate'}, h('b', {}, 'Speaking speed'), h('small', {}, 'Slower helps at the start. The Slow button plays at about two-thirds of this speed.')), rateVal, rate),
+      sw('vary', 'vary', 'Vary voices and pitch', 'Recommended. Mixes voices, speed and pitch in practice.'),
+      sw('fx', 'fx', 'Sound effects', 'Chimes for right and wrong answers.')),
+    h('h2', {class:'section-title'}, 'Daily goal'),
+    h('div', {class:'list'}, h('div', {class:'row'}, h('label', {class:'grow', for:'goal'}, h('b', {}, 'XP per day'), h('small', {}, 'One city lesson earns about 200 XP. A review earns 100 to 150.')), goal)),
+    h('h2', {class:'section-title'}, 'Your progress'),
+    h('p', {class:'muted', 'data-sync':''}, syncText()),
+    resetBtn);
+}
+
+function renderMethod(){
+  renderTopbar();
+  const src = (t, u) => h('li', {}, h('a', {href:u, target:'_blank', rel:'noopener'}, t));
+  setView('method',
+    h('button', {class:'btn btn-ghost', style:'margin-top:10px;padding-left:0', onclick:renderHome}, '← Back to the journey'),
+    h('h1', {class:'page-title'}, 'How this method works'),
+    h('div', {class:'prose'},
+      h('h2', {}, 'Learn the way Italian first-graders do'),
+      h('p', {}, 'Italian spelling is very regular. Children learning shallow spellings like Italian read new words accurately by the end of their first school year, while English-speaking children take more than twice as long. Italian schools use the phono-syllabic method: vowels first, then consonants joined to vowels as syllables, then hard and soft C and G, the "difficult sounds" (CHI, GN, GLI, SC), double consonants and stress. This app follows the same order, one city per stage.'),
+      h('h2', {}, 'Five steps in every city'),
+      h('ol', {},
+        h('li', {}, h('b', {}, 'Impara. '), 'One sound rule with tap-to-hear examples and a mouth tip.'),
+        h('li', {}, h('b', {}, 'Ascolta. '), 'Pick the word you hear from pairs like pala / palla. This is high-variability phonetic training: the same contrast in different voices, speeds and pitches. A 2025 review of 79 studies found medium-to-large gains that lasted and partly carried over to new words and voices, and identification tasks like this one worked best.'),
+        h('li', {}, h('b', {}, 'Leggi. '), 'Decode a word aloud yourself before you hear it, as Montessori classrooms do: see the letters, say the sounds.'),
+        h('li', {}, h('b', {}, 'Costruisci. '), 'Build a spoken word from syllable tiles, the way Italian classrooms use syllable cards.'),
+        h('li', {}, h('b', {}, 'Gioca. '), 'Tombola, word fishing, sorting and stress-clapping turn the same contrasts into play.')),
+      h('h2', {}, 'Spaced review'),
+      h('p', {}, 'Every word you meet joins your review deck. Misses come back the same day. Words you know come back after 1, 3, 7, 14 and 30 days.'),
+      h('h2', {}, 'A realistic plan'),
+      h('p', {}, 'Do one city or one review a day, about 10 to 15 minutes. The twelve cities take two to four weeks. Listening gains level off around 400 minutes of training, about a month of daily practice, and the ear-training meter tracks that target.'),
+      h('h2', {}, 'The color code'),
+      h('div', {class:'legend'}, wordEl('ca-sa'), wordEl('cia-o', {focus:/c[ei]/})),
+      h('p', {}, 'Red letters are vowels, blue letters consonants, and grey letters are silent. The underlined syllable carries the stress. A yellow highlight marks the sound you are practicing.'),
+      h('h2', {}, 'About the audio'),
+      h('p', {}, "Words are spoken by your device's Italian voices. Natural voices sound best: Microsoft Edge includes several, Chrome has Google italiano, and iPhones and Macs offer Alice and Luca. Turn on every Italian voice you have in Settings."),
+      h('h2', {}, 'Sources'),
+      h('ul', {class:'sources'},
+        src('Seymour, Aro & Erskine (2003). Foundation literacy acquisition in European orthographies. British Journal of Psychology.', 'https://discovery.dundee.ac.uk/en/publications/foundation-literacy-acquisition-in-european-orthographies/'),
+        src('Ventriglia (2016). Come insegnare a leggere ai bambini (the phono-syllabic method). Form@re.', 'https://oaj.fupress.net/index.php/formare/article/download/3627/3627/'),
+        src('Uchihara, Karas & Thomson (2025). High variability phonetic training: a meta-analysis. Studies in Second Language Acquisition.', 'https://www.cambridge.org/core/services/aop-cambridge-core/content/view/6ABB8C1F32D88D53EA8D05A4565E76F6/S0272263125100879a.pdf/high-variability-phonetic-training-hvpt-a-meta-analysis-of-l2-perceptual-training-studies.pdf'),
+        src('Uchihara, Karas & Thomson (2024). Does perceptual HVPT improve L2 speech production? Applied Psycholinguistics.', 'https://www.cambridge.org/core/product/E38D8F5CE65DC708137B0E95F97C6BC7'),
+        src('Montessori (1912). The Montessori Method, chapters XVI–XVII on reading and writing.', 'https://gutenberg.org/files/39863/39863-h/39863-h.htm'),
+        src("Dall'Armellina (2005). Giocare con la fonetica. ALMA Edizioni.", 'https://italiano-bello.com/wp-content/uploads/2022/05/ALMA-Edizioni-%E2%80%93-Giocare-con-la-fonetica-A1-C1-Presentazione.pdf'),
+        src('Quintarelli (2013). Le difficoltà ortografiche, vol. 1: digrammi e trigrammi. Erickson.', 'https://www.macrolibrarsi.it/libri/__le-difficolta-ortografiche-volume-1-libro.php'),
+        src('Pegoraro (2020). Fonetica pratica della lingua italiana A1–B2. ALMA Edizioni.', 'https://italiano-bello.com/en/shop/fonetica-pratica-della-lingua-italiana/'))));
+}
+
+/* ---------- boot ---------- */
+renderHome();
+initSync();
+})();
+</script>
+</body>
+</html>
