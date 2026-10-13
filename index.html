@@ -1035,7 +1035,7 @@ function sayP(text, p, slow){
 function player(text, p){
   const big = h('button', {class:'play', 'aria-label':'播放这个词（R）'}, icon('play'));
   const slow = h('button', {class:'slow', 'aria-label':'慢速播放（S）'}, icon('slow'), '慢速');
-  const play = (sl) => { big.classList.add('playing'); sayP(text, p, sl).then(() => big.classList.remove('playing')); };
+  const play = (sl) => { big.classList.add('playing'); Compagno.perk(); sayP(text, p, sl).then(() => big.classList.remove('playing')); };
   big.addEventListener('click', () => play(false));
   slow.addEventListener('click', () => play(true));
   return {el: h('div', {class:'player'}, big, slow), play, big};
@@ -1944,6 +1944,13 @@ const Compagno = {
     if (ok){ this.mood('cheer', 1200); this.hearts(2); this.say({it:ph.it, en:ph.en}, 2200, false); }
     else { this.mood('sad', 1600); this.say({it:ph.it, en:ph.en}, 3200, false); }
   },
+  /* a small ear twitch whenever a word is played: the cat listens with you (only if it is idle) */
+  perk(){
+    const p = activePet(), fe = this.el && !this.el.hidden && this.el.querySelector('.cat');
+    if (!p || !fe || reduceMotion() || S.petMoves === false) return;
+    if (petMood(p) === 'sleep' || fe.classList.contains('cheer') || fe.classList.contains('sad') || fe.classList.contains('pz')) return;
+    this.pose('ear', 1200, () => this.idle());
+  },
   pat(){
     const p = activePet();
     if (!p){ if (P.egg && eggReady()) renderHatch(); else if (P.egg) this.say({it:'Shh… dorme.', en:`它在熟悉你：${P.egg.progress} / ${P.egg.need}。上课、复习和任务都会让它更信任你。`}, 4000, false); return; }
@@ -1959,6 +1966,13 @@ const Compagno = {
     if (SCREEN === 'home'){ const old = $('.nest'); if (old) old.replaceWith(nestSection(currentLevel())); }
   }
 };
+/* the cat wakes up the moment you start studying (lesson, review, practice), not only after the first answer */
+function wakePet(greet){
+  const p = activePet(); if (!p || petMood(p) !== 'sleep') return false;
+  AWAKE.add(p.id); Compagno.refresh();
+  if (greet) Compagno.say(rnd([{it:'Buongiorno! Studiamo?', en:'早上好！开始学啦？'},{it:'Eccomi!', en:'我在这儿！一起学。'},{it:'Andiamo!', en:'走起！'}]), 3500, false);
+  return true;
+}
 function welcomeBack(){
   const t = today();
   if (P.lastSeen && daysBetween(P.lastSeen, t) >= 3){ earn(ECON.gift, 0); toast(`Bentornato! 欢迎回来，+${ECON.gift} 金币`, 'gift'); }
@@ -2119,7 +2133,7 @@ function openLevelSheet(L){
   const done = levelDone(L.id), cur = currentLevel(), isCur = cur && cur.id === L.id, locked = !done && !isCur;
   const st = (P.levels[L.id] || {}).stars || 0;
   const go = (opts) => { closeSheet(); startLesson(L, opts); };
-  const exs = L.learn[0].ex.slice(0,4).map(x => { const w = parseW(x); return h('button', {class:'ex', onclick:() => sayP(w.say)}, h('span', {class:'top'}, icon('speaker'), wordEl(w, {focus:L.focus}))); });
+  const exs = L.learn[0].ex.slice(0,4).map(x => { const w = parseW(x); return h('button', {class:'ex', onclick:() => { wakePet(false); Compagno.perk(); sayP(w.say); }}, h('span', {class:'top'}, icon('speaker'), wordEl(w, {focus:L.focus}))); });
   const actions = locked
     ? [h('p', {class:'muted', style:'margin:0'}, `先完成 ${cur ? cur.city : '前一站'} 再解锁这一站。如果前面的发音你已经会了，也可以直接从这里开始。`),
        h('button', {class:'btn btn-primary', onclick:() => go()}, '直接从这里开始')]
@@ -2144,6 +2158,7 @@ function startLesson(L, opts={}){
   const only = opts.only || null;
   const steps = only ? [only] : ['learn','listen','read','build','game'];
   const sess = {L, steps, i:0, good:0, total:0, xp:0, only, t0:Date.now(), factor:lessonFactor(L), coins:0, egg:0};
+  wakePet(true);
   runStep(sess);
 }
 function lessonShell(sess){
@@ -2225,7 +2240,7 @@ function stepLearn(ctx, L, next, alone){
   const render = () => {
     cleanup();
     const c = cards[i];
-    const exs = (c.ex || []).map(x => { const w = parseW(x); return h('button', {class:'ex', onclick:() => sayP(w.say)},
+    const exs = (c.ex || []).map(x => { const w = parseW(x); return h('button', {class:'ex', onclick:() => { wakePet(false); Compagno.perk(); sayP(w.say); }},
       h('span', {class:'top'}, icon('speaker'), wordEl(w, {focus:L.focus})), glossText(w) ? h('small', {}, glossText(w)) : null); });
     const back = h('button', {class:'btn btn-ghost', disabled: i === 0, onclick:() => { if (i > 0){ i--; render(); } }}, '上一条');
     const last = i === cards.length - 1;
@@ -2283,7 +2298,7 @@ function renderRead(ctx, it, done){
     h('div', {class:'rate-btns'},
       h('button', {class:'btn', onclick:() => fin(false)}, icon('retry'), '还不太像'),
       h('button', {class:'btn btn-good', onclick:() => fin(true)}, icon('check'), '一样了')));
-  function say(slow){ sayP(w.say, p, slow); if (!heard){ heard = true; rate.hidden = false; label.textContent = '再听一遍'; } }
+  function say(slow){ Compagno.perk(); sayP(w.say, p, slow); if (!heard){ heard = true; rate.hidden = false; label.textContent = '再听一遍'; } }
   function fin(ok){ if (fired) return; fired = true; fx(ok ? 'good' : 'soft'); done(ok, {graded:false}); }
   ctx.body.replaceChildren(
     stepHead(ctx.kicker, 'Leggi · 读', '先自己大声读，一个音节一个音节地读。然后听语音，比较一下。'),
@@ -2600,6 +2615,7 @@ function startReview(){
   keys.sort((a,b) => ((P.items[a] || {}).b ?? 9) - ((P.items[b] || {}).b ?? 9) || ((P.items[a] || {}).d || '').localeCompare((P.items[b] || {}).d || ''));
   const take = practice ? pick(keys, 12) : shuffle(keys.slice(0, 15));
   const sess = {review:true, practice, steps:['review'], i:0, good:0, total:0, xp:0, coins:0, egg:0};
+  wakePet(true);
   const ctx = lessonShell(sess);
   runQueue(ctx, take.map(makeItem), sess, res => { sess.good = res.good; sess.total = res.total; finishReview(sess, practice); },
     (n, N, it) => `${practice ? '练习' : 'Ripasso · 复习'} · ${n} / ${N} · ${it.L.city}`);
@@ -2720,7 +2736,7 @@ Compagno.mount();
 renderHome();
 welcomeBack();
 initSync();
-window.__suoni = { get P(){ return P; }, set P(v){ P = normalize(v); save(); }, save, track, ensureDaily, earn, renderHome, renderShop, renderQuests, renderAlbum, renderHatch, activePet, bumpStreak, today, addDays, FOLLETTI, ECON, LEVELS, startLesson, Compagno, PXP, POSE_T, IDLE_GAP, poseGrid, pose:(n, ms) => Compagno.pose(n, ms), get S(){ return S; }, renderSettings, renderZaino };
+window.__suoni = { get P(){ return P; }, set P(v){ P = normalize(v); save(); }, save, track, ensureDaily, earn, renderHome, renderShop, renderQuests, renderAlbum, renderHatch, activePet, bumpStreak, today, addDays, FOLLETTI, ECON, LEVELS, startLesson, Compagno, PXP, POSE_T, IDLE_GAP, poseGrid, pose:(n, ms) => Compagno.pose(n, ms), get S(){ return S; }, renderSettings, renderZaino, wakePet, petMood, AWAKE };
 })();
 </script>
 
