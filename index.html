@@ -1086,7 +1086,7 @@ function announce(msg){ const l = $('#live'); l.textContent = ''; setTimeout(()=
    COMPAGNI: folletti (companions), eggs, coins, shop, quests, patronus
    ============================================================ */
 const ECON = {
-  step:{c:3,e:4}, lesson:{c:15,e:10}, stars3:{c:10,e:5}, review:{c:10,e:8}, practice:{c:5,e:4}, goal:{c:15,e:10},
+  step:{c:3,e:4}, lesson:{c:15,e:10}, stars3:{c:10,e:5}, review:{c:10,e:8}, practice:{c:5,e:4}, reviewItem:{c:0,e:1,ok:2}, goal:{c:15,e:10},
   city:25, gift:20, perfect:15, streak:{3:30, 7:60, 14:100, 30:200, 60:300, 100:500},
   eggNeed:[100,200,300,400,500], eggPrice:[0,300,450,600,750], scudoPrice:120, scudoMax:7, luceNeed:3
 };
@@ -2206,6 +2206,7 @@ function runQueue(ctx, items, sess, done, kicker){
       if (!it.isRetry){ srs(it.key, ok); if (graded){ total++; if (ok) good++; } }
       if (!it.isRetry){ if (sess.review) track('review_item', 1); if (it.kind === 'read') track('read', 1); else if (ok) track(it.kind === 'listen' ? 'listen_ok' : 'build', 1); }
       gain(sess, ok ? (it.isRetry ? 3 : graded ? 10 : 5) : (graded ? 0 : 2));
+      if (sess.review && graded && !it.isRetry) earn(0, ok ? ECON.reviewItem.ok : ECON.reviewItem.e, sess);   /* every reviewed word also builds the box's trust */
       if (!ok && graded && !it.isRetry){ const again = makeItem(it.key) || it; again.isRetry = true; queue.push(again); }
       else finished++;
       ctx.setSub(finished / N);
