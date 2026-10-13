@@ -350,6 +350,28 @@ select{font:inherit;padding:.45rem .6rem;border-radius:10px;border:1.5px solid v
 .luce small{font-size:.75rem}
 .homecards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .nest-box{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1.5px dashed var(--line);background:var(--card);font-size:.85rem}
+/* review hub */
+.rmodes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.rmode.off{opacity:.5}
+.rmode.last{border-color:var(--blue)}
+.stop.is-review .stamp{background:var(--blue-soft);color:var(--blue);border-style:dashed;border-color:var(--blue)}
+.stop.is-review .stamp .ic svg{width:30px;height:30px}
+.memo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:440px;margin:14px auto 10px}
+.mcard{position:relative;aspect-ratio:3/4;border:2px solid var(--ink);border-radius:14px;background:var(--card);box-shadow:0 3px 0 var(--ink);padding:0;overflow:hidden;font:500 1rem/1.1 var(--font-body)}
+.mcard .face{position:absolute;inset:0;display:grid;place-items:center;padding:4px;overflow-wrap:anywhere;text-align:center}
+.mcard .front{display:none}
+.mcard.up .front,.mcard.done .front{display:grid}
+.mcard.up .back,.mcard.done .back{display:none}
+.mcard.s .back{background:var(--blue-soft);color:var(--blue)}
+.mcard.s .front{background:var(--blue-soft);color:var(--blue)}
+.mcard.w .back{background:var(--lemon-soft);color:var(--lemon-deep);font:800 1.7rem var(--font-display)}
+.mcard.done{border-color:var(--good);background:var(--good-soft);box-shadow:0 3px 0 var(--good)}
+.mcard.done .front{background:var(--good-soft);color:var(--ink)}
+.mcard .ic svg{width:28px;height:28px}
+.mcard:disabled{cursor:default}
+.slot.letter{min-width:40px;height:50px;padding:0 6px;font-size:1.35rem}
+.tile.letter{min-width:44px;height:48px;padding:0 10px;font-size:1.3rem}
+@media (max-width:420px){.mcard{font-size:.85rem}.slot.letter{min-width:32px;height:44px;font-size:1.15rem}.tile.letter{min-width:38px;height:44px;padding:0 8px;font-size:1.15rem}}
 .nest-box .grow{flex:1;min-width:0}
 .nest-box .grow b{font:800 .95rem/1.2 var(--font-display)}
 .nest-box .grow small{font-size:.78rem}
@@ -840,6 +862,14 @@ const ICONS = {
   sparkle:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z" fill="#BFD9FF" stroke="#2140AE" stroke-width="1.8" stroke-linejoin="round"/><path d="M19 17l.8 2.2 2.2.8-2.2.8L19 23l-.8-2.2-2.2-.8 2.2-.8z" fill="#2140AE"/></svg>',
   egg:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8c3.6 0 6.5 5 6.5 10.4A6.5 6.5 0 0 1 12 20.7a6.5 6.5 0 0 1-6.5-7.5C5.5 7.8 8.4 2.8 12 2.8z" fill="#FFD9C6" stroke="#E8734F" stroke-width="2"/><ellipse cx="9.6" cy="8.5" rx="1.3" ry="2.4" transform="rotate(-18 9.6 8.5)" fill="#fff" opacity=".8"/></svg>',
   zaino:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5a6 6 0 0 1 12 0V20a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 20z" fill="#5B7CFA" stroke="#1C2552" stroke-width="2" stroke-linejoin="round"/><path d="M9 4.5a3 3 0 0 1 6 0" fill="none" stroke="#1C2552" stroke-width="2" stroke-linecap="round"/><rect x="8" y="13" width="8" height="5.5" rx="1.5" fill="#FFF0BC" stroke="#1C2552" stroke-width="1.8"/></svg>',
+  ear:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 9.5a4.5 4.5 0 0 1 9 0c0 2.6-2 3.4-2.6 5.2-.5 1.6-.9 3.3-2.9 3.3-1.4 0-2.2-1-2.4-2.2" fill="#FFD9C6" stroke="#B4322A" stroke-width="2" stroke-linecap="round"/><path d="M10.5 10a2 2 0 0 1 4 0c0 1.2-1.1 1.6-1.6 2.5" fill="none" stroke="#B4322A" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  eq:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="14" rx="2" fill="#E3E9FB" stroke="#2140AE" stroke-width="2"/><rect x="13" y="5" width="8" height="14" rx="2" fill="#FFF0BC" stroke="#BF9008" stroke-width="2"/><path d="M6 10h2M6 14h2M16 10h2M16 14h2" stroke="#15223D" stroke-width="2" stroke-linecap="round"/></svg>',
+  blocks:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="12" width="8" height="8" rx="1.5" fill="#FFD1DC" stroke="#B4322A" stroke-width="2"/><rect x="13" y="12" width="8" height="8" rx="1.5" fill="#D7F2E3" stroke="#1D8350" stroke-width="2"/><rect x="8" y="3" width="8" height="8" rx="1.5" fill="#DCE4FF" stroke="#2140AE" stroke-width="2"/></svg>',
+  pen:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.2L16.5 4.5a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" fill="#FFF0BC" stroke="#7A5A00" stroke-width="2" stroke-linejoin="round"/><path d="M14.5 6.5l3 3M4 20h16" stroke="#7A5A00" stroke-width="2" stroke-linecap="round"/></svg>',
+  cards:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="9" height="13" rx="2" fill="#E3E9FB" stroke="#2140AE" stroke-width="2" transform="rotate(-8 7.5 12.5)"/><rect x="12" y="5" width="9" height="13" rx="2" fill="#FFF0BC" stroke="#BF9008" stroke-width="2" transform="rotate(8 16.5 11.5)"/><text x="16.5" y="15.5" font-size="8" font-weight="700" text-anchor="middle" fill="#7A5A00">?</text></svg>',
+  grid:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5" fill="#FFFFFF" stroke="#15223D" stroke-width="2"/><path d="M9.2 3.5v17M14.8 3.5v17M3.5 9.2h17M3.5 14.8h17" stroke="#15223D" stroke-width="1.6"/><circle cx="6.3" cy="6.3" r="1.6" fill="#A8743F"/><circle cx="12" cy="12" r="1.6" fill="#A8743F"/><circle cx="17.7" cy="17.7" r="1.6" fill="#A8743F"/></svg>',
+  balloon:'<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="9" rx="6.5" ry="7.5" fill="#FFD1DC" stroke="#B4322A" stroke-width="2"/><path d="M12 16.5l-1.2 1.8h2.4zM12 18.3c0 2 1.5 2.5 1 4" fill="#B4322A" stroke="#B4322A" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  clap:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12.5l3.5-6a1.5 1.5 0 0 1 2.6 1.4l-1.6 3.1 4.6-5a1.5 1.5 0 0 1 2.2 2L15 12l3.4-3a1.5 1.5 0 0 1 2 2.2L15 17.5c-2.8 2.9-6.8 3-9 .8-1.8-1.9-1.4-4.2 1-5.8z" fill="#FFD9C6" stroke="#B4322A" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 5.5l1.5 1.5M6.5 3.5l.5 2M3 8.5l2 .5" stroke="#F4C430" stroke-width="2" stroke-linecap="round"/></svg>',
   book:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2h-6zM19.5 4.5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z" fill="#E3E9FB" stroke="#2140AE" stroke-width="2" stroke-linejoin="round"/><path d="M7 8.5h3M7 11.5h3M14 8.5h3M14 11.5h3" stroke="#2140AE" stroke-width="1.6" stroke-linecap="round"/></svg>'
 };
 function icon(n, cls){ const s = h('span', {class:'ic' + (cls ? ' ' + cls : '')}); s.innerHTML = ICONS[n]; return s; }
@@ -855,7 +885,7 @@ const LS_P = 'suoni-italia:progress:v1', LS_S = 'suoni-italia:settings:v1';
 const lsGet = k => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
 const lsSet = (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
 const freshProgress = () => ({v:2, updatedAt:0, levels:{}, xp:0, daily:{date:'', xp:0, goal:false}, streak:{count:0, last:'', best:0}, earMs:0, items:{}, lessons:0, reviews:0, diploma:'',
-  coins:0, earned:0, egg:null, pets:[], active:'', inv:{snacks:{}, acc:[], decorOff:[]}, decor:[], keeps:[], quests:{daily:{date:'', list:[], perfect:false}, weekly:{week:'', list:[]}, ms:{}}, luce:0, scudo:0, casts:0, lastSeen:''});
+  coins:0, earned:0, egg:null, pets:[], active:'', inv:{snacks:{}, acc:[], decorOff:[]}, decor:[], keeps:[], quests:{daily:{date:'', list:[], perfect:false}, weekly:{week:'', list:[]}, ms:{}}, luce:0, scudo:0, casts:0, lastSeen:'', lastReviewMode:''});
 function normalize(o){
   const f = freshProgress(), p = Object.assign(f, o || {}); delete p.pet;
   ['levels','items','daily','streak','inv','quests'].forEach(k => { if (!p[k] || typeof p[k] !== 'object') p[k] = freshProgress()[k]; });
@@ -2041,8 +2071,8 @@ function renderHome(){
   const startL = cur || LEVELS[LEVELS.length-1];
   const startBtn = h('button', {class:'btn btn-primary btn-lg', onclick:() => startLesson(startL)},
     icon('play'), h('span', {class:'two'}, h('span', {}, cur ? (doneN ? `继续：${cur.city}` : '开始：Venezia') : '重玩 Palermo'), h('small', {}, `第 ${startL.id} 站 · ${startL.en}`)));
-  const reviewBtn = doneN ? h('button', {class:'btn btn-lg', onclick:startReview},
-    icon('retry'), h('span', {class:'two'}, h('span', {}, due ? `复习 ${due} 个词` : '混合练习'), h('small', {}, due ? '间隔复习，今天到期' : '没有到期的词，加练一下'))) : null;
+  const reviewBtn = doneN ? h('button', {class:'btn btn-lg', onclick:renderRipasso},
+    icon('retry'), h('span', {class:'two'}, h('span', {}, due ? `复习 ${due} 个词` : '混合练习'), h('small', {}, due ? '今天到期 · 八种玩法' : '没有到期的词 · 八种玩法'))) : null;
   voiceBannerSlot = h('div', {}, voiceBanner());
 
   const ear = earMin();
@@ -2085,7 +2115,11 @@ function renderHome(){
   const pet = activePet(); if (pet) Compagno.say(greetLine(pet, cur), 7000, false);
 }
 function buildRoad(road, cur){
-  const rows = LEVELS.map((L, i) => {
+  const due = dueKeys().length, anyDone = LEVELS.some(l => levelDone(l.id));
+  const revBtn = h('button', {class:'stop is-review', onclick:() => { if (anyDone) renderRipasso(); else toast('先完成第一站 Venezia，复习站就开了。', 'scroll'); }, 'aria-label':'复习站：' + (due ? `今天到期 ${due} 个词` : '八种玩法')},
+    h('span', {class:'stamp', style:'--rot:4deg'}, icon('retry')),
+    h('span', {class:'stop-label'}, h('b', {}, 'Ripasso · 复习站'), h('small', {}, anyDone ? (due ? `今天到期 ${due} 个词 · 八种玩法` : '没有到期的词 · 随便练一局') : '完成第一站后开放')));
+  const rows = [{row: h('div', {class:'stop-row'}, revBtn), btn: revBtn, L: null, done: anyDone}].concat(LEVELS.map((L, i) => {
     const done = levelDone(L.id), isCur = cur && cur.id === L.id, locked = !done && !isCur;
     const st = (P.levels[L.id] || {}).stars || 0;
     const btn = h('button', {class:'stop ' + (done ? 'is-done' : isCur ? 'is-current' : 'is-locked'), onclick:() => openLevelSheet(L),
@@ -2093,7 +2127,7 @@ function buildRoad(road, cur){
       h('span', {class:'stamp', style:`--rot:${[-7,5,-3,8,-5,4][i%6]}deg`}, done ? icon('check') : String(L.id), locked ? h('span', {class:'tiny'}, icon('lock')) : null),
       h('span', {class:'stop-label'}, h('b', {}, L.city), h('small', {}, L.en), done ? starsEl(st) : null));
     return {row: h('div', {class:'stop-row'}, btn), btn, L, done};
-  });
+  }));
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'path'); svg.setAttribute('aria-hidden', 'true');
   road.replaceChildren(svg, ...rows.map(r => r.row));
@@ -2114,7 +2148,7 @@ function buildRoad(road, cur){
     let html = '';
     for (let i=0;i<pts.length-1;i++){
       const [x1,y1] = pts[i], [x2,y2] = pts[i+1], my = (y1+y2)/2;
-      html += `<path class="seg${rows[i+1].done || (rows[i].done && cur && cur.id === rows[i+1].L.id) ? ' done' : ''}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
+      html += `<path class="seg${rows[i+1].done || (rows[i].done && cur && rows[i+1].L && cur.id === rows[i+1].L.id) ? ' done' : ''}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
     }
     svg.innerHTML = html;
   };
@@ -2400,7 +2434,7 @@ function gameTombola(ctx, L, sess, done, base){
     const w = grid[i];
     if (w === calls[ci]){
       marked.add(i); cells[i].classList.add('marked'); cells[i].disabled = true;
-      addEar(Date.now() - t0); if (!missed){ first++; track('listen_ok', 1); } gain(sess, missed ? 3 : 10);
+      addEar(Date.now() - t0); if (!missed){ first++; track('listen_ok', 1); if (L.onWord) L.onWord(w, true); } gain(sess, missed ? 3 : 10);
       let newLine = false;
       LINES.forEach((ln,k) => { if (!lines.has(k) && ln.every(x => marked.has(x))){ lines.add(k); newLine = true; ln.forEach(x => cells[x].classList.add('line')); } });
       ci++; missed = false;
@@ -2410,6 +2444,7 @@ function gameTombola(ctx, L, sess, done, base){
       busy = true; upd();
       later(() => { busy = false; cp = voiceParams(true); t0 = Date.now(); play(false); }, 950);
     } else {
+      if (!missed && L.onWord) L.onWord(calls[ci], false);
       missed = true; fx('bad'); Compagno.react(false, phrase(OOPS));
       cells[i].classList.add('nope'); later(() => cells[i].classList.remove('nope'), 450);
       const g = glossText(parseW(w));
@@ -2478,7 +2513,7 @@ function gameBalloons(ctx, L, sess, done, base){
     if (busy || f.caught) return;
     if (f.w === target){
       busy = true; f.caught = true; f.el.classList.add('caught'); f.el.style.transform = `translate(${f.x}px,${f.y - 140}px) scale(1.15)`;
-      addEar(Date.now() - t0); if (!missed){ good++; track('listen_ok', 1); } gain(sess, missed ? 3 : 10); fx('good');
+      addEar(Date.now() - t0); if (!missed){ good++; track('listen_ok', 1); if (L.onWord) L.onWord(target, true); } gain(sess, missed ? 3 : 10); fx('good');
       const g = glossText(parseW(target));
       const pr = phrase(PRAISE); Compagno.react(true, pr);
       msg.replaceChildren(h('span', {}, h('b', {}, pr.it), ' ', target, g ? ` · ${g}` : ''));
@@ -2486,6 +2521,7 @@ function gameBalloons(ctx, L, sess, done, base){
       if (r >= ROUNDS){ later(() => { cancelAnimationFrame(raf); fx('win'); confetti(); msg.replaceChildren(); endSlot.replaceChildren(gameEnd(ctx, 'Che volo!', '全部放飞！', good, ROUNDS, done)); save(); }, 650); }
       else later(round, 900);
     } else {
+      if (!missed && L.onWord) L.onWord(target, false);
       missed = true; fx('bad'); Compagno.react(false, phrase(OOPS)); f.el.classList.add('nope'); later(() => f.el.classList.remove('nope'), 600);
       const g = glossText(parseW(f.w));
       msg.replaceChildren(h('span', {}, '这个气球写的是 ', h('b', {}, f.w), g ? `（${g}）` : '', '。再听一遍。'));
@@ -2547,7 +2583,7 @@ function gameStress(ctx, L, sess, done, base){
       if (answered) return; answered = true;
       const ok = k === w.stress;
       btns.forEach((b,j) => { b.disabled = true; b.classList.add(j === w.stress ? 'good' : j === k ? 'bad' : 'dim'); });
-      fx(ok ? 'good' : 'bad'); addEar(Date.now() - t0); if (ok){ good++; gain(sess, 10); track('listen_ok', 1); }
+      fx(ok ? 'good' : 'bad'); addEar(Date.now() - t0); if (ok){ good++; gain(sess, 10); track('listen_ok', 1); } if (L.onWord) L.onWord(w.text, ok);
       fb.replaceChildren(feedback(ok, ok ? phrase(PRAISE) : phrase(OOPS), [h('p', {class:'fb-line'}, wordEl(w), ' · 重音在 ', h('b', {}, w.syl[w.stress].toUpperCase()), glossText(w) ? ` · ${glossText(w)}` : ''),
         h('div', {class:'compare'}, compareBtn(w, p, true))], () => { i++; one(); }, ok ? {auto:1500} : {}));
     }
@@ -2621,6 +2657,224 @@ function startReview(){
   runQueue(ctx, take.map(makeItem), sess, res => { sess.good = res.good; sess.total = res.total; finishReview(sess, practice); },
     (n, N, it) => `${practice ? '练习' : 'Ripasso · 复习'} · ${n} / ${N} · ${it.L.city}`);
 }
+/* ---------- Ripasso · the review hub: eight formats, each session a different game ---------- */
+const REVIEW_MODES = [
+  {id:'ascolta',    it:'Ascolta',           zh:'听辨',       icon:'ear',     min:2, desc:'听一个词，选出是哪个。'},
+  {id:'uguale',     it:'Uguale o diverso?', zh:'一样不一样', icon:'eq',      min:2, desc:'听一个词、看一个词：是同一个词吗？'},
+  {id:'costruisci', it:'Costruisci',        zh:'拼音节',     icon:'blocks',  min:2, desc:'用音节块拼出听到的词。'},
+  {id:'dettato',    it:'Dettato',           zh:'听写',       icon:'pen',     min:2, desc:'听一个词，用字母块把它写出来。'},
+  {id:'memoria',    it:'Memoria',           zh:'翻牌配对',   icon:'cards',   min:4, desc:'把声音卡和单词卡配成对。'},
+  {id:'tombola',    it:'Tombola',           zh:'宾果',       icon:'grid',    min:9, desc:'听报号，在卡片上点出那个词。'},
+  {id:'palloncini', it:'Palloncini',        zh:'气球',       icon:'balloon', min:4, desc:'戳破写着那个词的气球。'},
+  {id:'accento',    it:'Batti le mani',     zh:'拍手找重音', icon:'clap',    min:4, desc:'在重读的音节上拍手。'}
+];
+/* the words to review: due items first; padded with words from finished stops when there are few */
+function reviewPool(){
+  let keys = dueKeys(); const practice = !keys.length;
+  if (keys.length < 8){
+    const extra = Object.keys(ITEM_INDEX).filter(k => levelDone(ITEM_INDEX[k].L.id) && ITEM_INDEX[k].kind !== 'read' && !keys.includes(k));
+    keys = keys.concat(pick(extra, 12 - keys.length));
+  }
+  const words = [];
+  keys.forEach(k => {
+    const ix = ITEM_INDEX[k]; if (!ix) return;
+    const ws = ix.kind === 'listen' ? (Array.isArray(ix.data) ? ix.data : [ix.data.t]) : [parseW(ix.data).text];
+    ws.forEach(w => { if (!words.find(x => x.w === w)) words.push({w, key:k, L:ix.L}); });
+  });
+  return {keys, words, practice};
+}
+function sylOf(L, w){
+  const t = w.toLowerCase();
+  const lists = [L.build || [], L.read || [], ...(L.learn || []).map(c => (c.ex || []).filter(x => typeof x === 'string'))];
+  for (const list of lists) for (const r of list){ const p = parseW(r); if (p.text.toLowerCase() === t && p.syl) return r; }
+  return null;
+}
+function reviewPartners(x, pool, n){
+  let ps = partnersOf(x.L, x.w);
+  if (!ps.length) ps = pool.words.filter(y => y.w !== x.w).map(y => y.w);
+  return pick(ps, n);
+}
+function listenItemFor(x, pool){ return {kind:'listen', key:x.key, L:x.L, target:x.w, options:shuffle([x.w, ...reviewPartners(x, pool, 2)])}; }
+function buildItemFor(x){ const raw = sylOf(x.L, x.w); return raw ? {kind:'build', key:x.key, L:x.L, w:parseW(raw)} : null; }
+function reviewModesFor(n){ return REVIEW_MODES.filter(m => n >= m.min); }
+function reviewHit(sess, key, ok){
+  if (key) srs(key, ok);
+  track('review_item', 1); if (ok) track('listen_ok', 1);
+  gain(sess, ok ? 10 : 0); earn(0, ok ? ECON.reviewItem.ok : ECON.reviewItem.e, sess);
+  save(); renderTopbar();
+}
+/* a synthetic "stop" so the lesson games (tombola, balloons, stress) can run on the review words */
+function reviewLevel(pool, type, sess){
+  const words = pool.words.map(x => x.w), used = new Set(), sets = [];
+  pool.words.forEach(x => {
+    if (used.has(x.w)) return;
+    const set = [x.w, ...partnersOf(x.L, x.w).filter(w => !used.has(w))];
+    if (set.length < 2) set.push(...pick(words.filter(w => w !== x.w && !set.includes(w)), 1));
+    set.forEach(w => used.add(w)); sets.push(set);
+  });
+  const syl = pool.words.map(x => sylOf(x.L, x.w)).filter(Boolean);
+  const stressPool = syl.filter(r => parseW(r).syl.length >= 2);
+  const keyOf = w => (pool.words.find(x => x.w === w) || {}).key;
+  return {id:'rev', city:'Ripasso', en:'复习', it:'Ripasso', focus:null, listen:sets, read:syl.length ? syl : words, build:syl,
+    game:{type, pool: stressPool.length >= 4 ? stressPool : syl},
+    onWord:(w, ok) => { const k = keyOf(w); if (k) srs(k, ok); track('review_item', 1); earn(0, ok ? ECON.reviewItem.ok : ECON.reviewItem.e, sess); }};
+}
+function startReviewMode(modeId){
+  const pool = reviewPool(); const n = pool.words.length;
+  if (!n){ toast('先完成第一站，这里才有词可以复习。', 'scroll'); return; }
+  let mode = REVIEW_MODES.find(m => m.id === modeId && n >= m.min);
+  if (!mode){ const opts = reviewModesFor(n).filter(m => m.id !== P.lastReviewMode); mode = rnd(opts.length ? opts : reviewModesFor(n)); }
+  P.lastReviewMode = mode.id;
+  const sess = {review:true, practice:pool.practice, mode:mode.id, steps:['review'], i:0, good:0, total:0, xp:0, coins:0, egg:0};
+  wakePet(true);
+  const ctx = lessonShell(sess);
+  const base = `${mode.it} · ${mode.zh} · ${pool.practice ? '练习' : '复习'}`;
+  const finish = res => { sess.good = res.good; sess.total = res.total; finishReview(sess, pool.practice); };
+  const kick = (j, N) => `${base} · ${j} / ${N}`;
+  if (mode.id === 'ascolta') runQueue(ctx, pick(pool.words, 12).map(x => listenItemFor(x, pool)), sess, finish, kick);
+  else if (mode.id === 'costruisci'){
+    const items = pool.words.map(buildItemFor).filter(Boolean);
+    if (items.length < 2){ startReviewMode('ascolta'); return; }
+    runQueue(ctx, pick(items, 10), sess, finish, kick);
+  }
+  else if (mode.id === 'uguale') reviewUguale(ctx, pool, sess, finish, base);
+  else if (mode.id === 'memoria') reviewMemoria(ctx, pool, sess, finish, base);
+  else if (mode.id === 'dettato') reviewDettato(ctx, pool, sess, finish, base);
+  else { const type = {tombola:'tombola', palloncini:'balloons', accento:'stress'}[mode.id]; GAMES[type](ctx, reviewLevel(pool, type, sess), sess, finish, base); }
+}
+/* Uguale o diverso? — hear one word, see one word, same or not */
+function reviewUguale(ctx, pool, sess, done, base){
+  const N = Math.min(12, Math.max(6, pool.words.length)); let i = 0, good = 0, lastW = '';
+  const one = () => {
+    cleanup();
+    if (i >= N){ ctx.body.replaceChildren(stepHead(base, 'Uguale o diverso? · 一样不一样', '听一个词，看卡片上的词。'), gameEnd(ctx, good >= N * 0.8 ? 'Che orecchio!' : 'Fatto!', '', good, N, done)); fx('win'); if (good >= N * 0.8) confetti(); return; }
+    let x = rnd(pool.words); if (pool.words.length > 1 && x.w === lastW) x = rnd(pool.words.filter(y => y.w !== lastW)); lastW = x.w;
+    const same = Math.random() < 0.5, other = reviewPartners(x, pool, 1);
+    const shown = (same || !other.length) ? x.w : other[0];
+    const isSame = shown === x.w;
+    const p = voiceParams(true), pl = player(x.w, p), t0 = Date.now(); let answered = false;
+    const fb = h('div', {});
+    const btns = [['Uguale', '一样', true], ['Diverso', '不一样', false]].map(([it, zh, v]) => h('button', {class:'bucket', onclick:() => choose(v)}, h('b', {}, it), h('small', {}, zh)));
+    function choose(v){
+      if (answered) return; answered = true;
+      const ok = v === isSame;
+      btns.forEach((b, j) => { b.disabled = true; const isRight = (j === 0) === isSame; b.classList.add(isRight ? 'good' : ((j === 0) === v ? 'bad' : 'dim')); });
+      fx(ok ? 'good' : 'bad'); addEar(Date.now() - t0); if (ok) good++;
+      reviewHit(sess, x.key, ok);
+      const gl = glossText(parseW(x.w));
+      fb.replaceChildren(feedback(ok, ok ? phrase(PRAISE) : phrase(OOPS), [
+        h('p', {class:'fb-line'}, '语音说的是 ', h('b', {}, x.w), gl ? `（${gl}）` : '', isSame ? '，和卡片上一样。' : `，卡片上写的是 ${shown}。`),
+        isSame ? null : h('div', {class:'compare'}, compareBtn(x.w, p, true), compareBtn(shown, p, false))], () => { i++; one(); }, ok ? {auto:1300} : {}));
+    }
+    ctx.body.replaceChildren(stepHead(`${base} · ${i+1} / ${N}`, 'Uguale o diverso? · 一样不一样', '先听，再看卡片：语音说的是不是这个词？'),
+      pl.el, h('div', {class:'sortcard'}, wordEl(shown, {dots:false})), h('div', {class:'buckets'}, btns), fb);
+    later(() => pl.play(false), 380);
+    KEYS = {r:() => pl.play(false), s:() => pl.play(true), '1':() => choose(true), '2':() => choose(false)};
+  };
+  one();
+}
+/* Memoria — four sound cards and four word cards */
+function reviewMemoria(ctx, pool, sess, done, base){
+  cleanup();
+  let ws = [];
+  for (const x of shuffle(pool.words)){
+    if (ws.length >= 4) break;
+    if (ws.find(y => y.w === x.w)) continue;
+    ws.push(x);
+    const pr = partnersOf(x.L, x.w).map(w => pool.words.find(y => y.w === w)).filter(Boolean);
+    if (pr.length && ws.length < 4 && !ws.find(y => y.w === pr[0].w)) ws.push(pr[0]);
+  }
+  if (ws.length < 4) ws = pick(pool.words, 4);
+  const cards = shuffle([...ws.map(x => ({t:'s', x})), ...ws.map(x => ({t:'w', x}))]);
+  let open = null, busy = false, pairs = 0; const wrong = new Set(); const p = voiceParams(false);
+  const msg = h('div', {class:'tbanner', 'aria-live':'polite'}), endSlot = h('div', {});
+  const els = cards.map((c, i) => {
+    const b = h('button', {class:'mcard ' + c.t, 'aria-label': c.t === 's' ? '声音卡：翻开听一听' : '单词卡'},
+      h('span', {class:'face back'}, c.t === 's' ? icon('speaker') : '?'),
+      h('span', {class:'face front'}, c.t === 's' ? icon('speaker') : wordEl(c.x.w, {dots:false})));
+    b.addEventListener('click', () => flip(i)); return b;
+  });
+  function flip(i){
+    if (busy) return;
+    const c = cards[i], el = els[i];
+    if (el.classList.contains('up') || el.classList.contains('done')) return;
+    el.classList.add('up'); if (c.t === 's') sayP(c.x.w, p);
+    if (open === null){ open = i; return; }
+    const o = cards[open], oi = open; busy = true;
+    const match = o.t !== c.t && o.x.w === c.x.w;
+    later(() => {
+      if (match){
+        [oi, i].forEach(k => els[k].classList.add('done')); pairs++; fx('good');
+        const first = !wrong.has(c.x.w); reviewHit(sess, c.x.key, first);
+        const pr = phrase(PRAISE), gl = glossText(parseW(c.x.w));
+        msg.replaceChildren(h('span', {class:'muted'}, `${pr.it} ${c.x.w}${gl ? ' · ' + gl : ''}`)); Compagno.react(true, pr);
+        if (pairs >= ws.length){ fx('win'); confetti(); const good = ws.filter(x => !wrong.has(x.w)).length; msg.replaceChildren(); endSlot.replaceChildren(gameEnd(ctx, 'Memoria!', '全部配成对了。', good, ws.length, done)); save(); }
+      } else {
+        [oi, i].forEach(k => els[k].classList.remove('up'));
+        if (o.t !== c.t){ wrong.add(o.x.w); wrong.add(c.x.w); fx('bad'); msg.replaceChildren(h('span', {class:'muted'}, '不是一对。再翻。')); }
+        else msg.replaceChildren(h('span', {class:'muted'}, o.t === 's' ? '两张都是声音卡。记住它们，去找单词卡。' : '两张都是单词卡。翻一张声音卡听听。'));
+      }
+      open = null; busy = false;
+    }, c.t === 's' ? 1100 : 750);
+  }
+  ctx.body.replaceChildren(stepHead(base, 'Memoria · 翻牌配对', '翻开一张声音卡听一听，再找到写着那个词的卡片。四对全配上就赢了。'), h('div', {class:'memo'}, els), msg, endSlot);
+}
+/* Dettato — hear a word, spell it with letter tiles (two decoy letters) */
+function reviewDettato(ctx, pool, sess, done, base){
+  const cands = pool.words.filter(x => x.w.length <= 9 && /^[a-zàèéìòù]+$/i.test(x.w));
+  const items = pick(cands.length >= 2 ? cands : pool.words, 8); let i = 0, good = 0;
+  const CONF = {c:'g', g:'c', s:'z', z:'s', p:'b', b:'p', t:'d', d:'t', f:'v', v:'f', e:'i', i:'e', o:'u', u:'o', l:'r', r:'l', n:'m', m:'n', h:'k', q:'c', a:'e'};
+  const one = () => {
+    cleanup();
+    if (i >= items.length){ ctx.body.replaceChildren(stepHead(base, 'Dettato · 听写', '先听，再用字母块把这个词拼出来。'), gameEnd(ctx, good >= items.length * 0.8 ? 'Perfetto!' : 'Fatto!', '', good, items.length, done)); fx('win'); if (good >= items.length * 0.8) confetti(); return; }
+    const x = items[i], word = x.w.toLowerCase(), letters = [...word];
+    const extra = [];
+    for (const ch of shuffle(letters)){ const d = CONF[ch]; if (d && !letters.includes(d) && !extra.includes(d)) extra.push(d); if (extra.length >= 2) break; }
+    while (extra.length < 2){ const d = rnd([...'abcdefghilmnoprstuvz']); if (!letters.includes(d) && !extra.includes(d)) extra.push(d); }
+    const tiles = shuffle([...letters, ...extra].map((ch, k) => ({ch, k})));
+    const slots = new Array(letters.length).fill(null); let answered = false;
+    const p = voiceParams(true), pl = player(x.w, p), t0 = Date.now();
+    const slotEls = slots.map((_, k) => h('button', {class:'slot letter', onclick:() => unplace(k)}));
+    const slotWrap = h('div', {class:'slots'}, slotEls);
+    const tileEls = tiles.map(t => h('button', {class:'tile letter', onclick:() => place(t)}, t.ch));
+    const check = h('button', {class:'btn btn-primary', disabled:true, onclick:checkIt}, icon('check'), '检查');
+    const fb = h('div', {});
+    function place(t){ if (answered || slots.includes(t)) return; const k = slots.indexOf(null); if (k < 0) return; slots[k] = t; draw(); }
+    function unplace(k){ if (answered || !slots[k]) return; slots[k] = null; draw(); }
+    function draw(){ slotEls.forEach((el, k) => { el.textContent = slots[k] ? slots[k].ch : ''; el.classList.toggle('filled', !!slots[k]); }); tileEls.forEach((el, k) => el.classList.toggle('used', slots.includes(tiles[k]))); check.disabled = slots.includes(null); }
+    function checkIt(){
+      if (answered || slots.includes(null)) return; answered = true;
+      const built = slots.map(s => s.ch).join(''), ok = built === word;
+      slotWrap.classList.add(ok ? 'good' : 'bad'); check.disabled = true; tileEls.forEach(t => t.disabled = true);
+      fx(ok ? 'good' : 'bad'); addEar(Date.now() - t0); if (ok) good++;
+      reviewHit(sess, x.key, ok);
+      const w = parseW(x.w), gl = glossText(w);
+      fb.replaceChildren(feedback(ok, ok ? phrase(PRAISE) : phrase(OOPS), [
+        h('p', {class:'fb-line'}, ok ? [wordEl(w), gl ? ` · ${gl}` : ''] : ['这个词写作 ', h('b', {}, x.w), gl ? `（${gl}）` : '', '，你写的是 ', h('b', {}, built), '。']),
+        h('div', {class:'compare'}, compareBtn(x.w, p, true))], () => { i++; one(); }, ok ? {auto:1500} : {}));
+    }
+    ctx.body.replaceChildren(stepHead(`${base} · ${i+1} / ${items.length}`, 'Dettato · 听写', '先听，再用字母块把这个词拼出来。里面多了两个用不到的字母。'),
+      pl.el, slotWrap, h('div', {class:'tiles'}, tileEls), h('div', {class:'actionrow'}, check), fb);
+    later(() => pl.play(false), 380);
+    KEYS = {r:() => pl.play(false), s:() => pl.play(true), Enter:checkIt, Backspace:() => { for (let k = slots.length - 1; k >= 0; k--) if (slots[k]){ unplace(k); break; } }};
+  };
+  one();
+}
+/* the hub page */
+function renderRipasso(){
+  renderTopbar();
+  const pool = reviewPool(), due = dueKeys().length, n = pool.words.length;
+  const cards = REVIEW_MODES.map(m => { const okN = n >= m.min;
+    return h('button', {class:'homecard rmode' + (okN ? '' : ' off') + (P.lastReviewMode === m.id ? ' last' : ''), disabled:!okN, onclick:() => startReviewMode(m.id)},
+      icon(m.icon), h('span', {style:'min-width:0'}, h('b', {}, `${m.it} · ${m.zh}`), h('small', {}, okN ? (P.lastReviewMode === m.id ? '上次玩的 · ' + m.desc : m.desc) : `至少要 ${m.min} 个词`))); });
+  setView('ripasso',
+    h('button', {class:'btn btn-ghost', style:'margin-top:10px;padding-left:0', onclick:renderHome}, '← 回到旅程'),
+    h('h1', {class:'page-title'}, 'Ripasso · 复习站'),
+    h('p', {class:'muted', style:'margin:0'}, n ? (due ? `今天到期 ${due} 个词，` : '没有到期的词，拿学过的词随便练，') + `这次的词有 ${pool.words.slice(0, 8).map(x => x.w).join('、')}${n > 8 ? '……' : ''}。每种玩法都算复习，一样加金币和纸箱信任。` : '先完成第一站，这里才有词可以复习。'),
+    n ? h('div', {class:'hero-actions'}, h('button', {class:'btn btn-primary btn-lg', onclick:() => startReviewMode(null)}, icon('retry'), h('span', {class:'two'}, h('span', {}, '随机来一个'), h('small', {}, '每次换一种玩法，不和上次重复')))) : null,
+    h('h2', {class:'section-title'}, '八种玩法'),
+    h('div', {class:'rmodes'}, cards));
+}
 function finishReview(sess, practice){
   gain(sess, 15); bumpStreak(); P.reviews = (P.reviews || 0) + 1;
   const r = practice ? ECON.practice : ECON.review; earn(r.c, r.e, sess); addBond(6);
@@ -2638,7 +2892,8 @@ function finishReview(sess, practice){
     rewardRows(sess),
     eggReady() ? h('p', {style:'margin:0 0 14px'}, h('button', {class:'btn btn-primary', onclick:renderHatch}, icon('egg'), '箱子里的猫准备好了，去开箱！')) : null,
     h('div', {class:'result-actions'},
-      left ? h('button', {class:'btn btn-primary btn-lg', onclick:startReview}, icon('retry'), '继续复习') : null,
+      h('button', {class:'btn btn-primary btn-lg', onclick:() => startReviewMode(null)}, icon('retry'), h('span', {class:'two'}, h('span', {}, left ? '继续复习' : '再来一局'), h('small', {}, '随机换一种玩法'))),
+      h('button', {class:'btn btn-lg', onclick:renderRipasso}, '挑一种玩法'),
       h('button', {class:'btn btn-lg', onclick:renderHome}, '回到旅程'))));
   fx('win'); resultLine(acc >= 0.8 ? 0 : 1); if (acc >= 0.8) setTimeout(confetti, 300);
 }
@@ -2737,7 +2992,7 @@ Compagno.mount();
 renderHome();
 welcomeBack();
 initSync();
-window.__suoni = { get P(){ return P; }, set P(v){ P = normalize(v); save(); }, save, track, ensureDaily, earn, renderHome, renderShop, renderQuests, renderAlbum, renderHatch, activePet, bumpStreak, today, addDays, FOLLETTI, ECON, LEVELS, startLesson, Compagno, PXP, POSE_T, IDLE_GAP, poseGrid, pose:(n, ms) => Compagno.pose(n, ms), get S(){ return S; }, renderSettings, renderZaino, wakePet, petMood, AWAKE };
+window.__suoni = { get P(){ return P; }, set P(v){ P = normalize(v); save(); }, save, track, ensureDaily, earn, renderHome, renderShop, renderQuests, renderAlbum, renderHatch, activePet, bumpStreak, today, addDays, FOLLETTI, ECON, LEVELS, startLesson, Compagno, PXP, POSE_T, IDLE_GAP, poseGrid, pose:(n, ms) => Compagno.pose(n, ms), get S(){ return S; }, renderSettings, renderZaino, wakePet, petMood, AWAKE, renderRipasso, startReviewMode, reviewPool, REVIEW_MODES };
 })();
 </script>
 
