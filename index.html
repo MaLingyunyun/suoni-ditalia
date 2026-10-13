@@ -331,6 +331,9 @@ select{font:inherit;padding:.45rem .6rem;border-radius:10px;border:1.5px solid v
 .nest{--sun:var(--nest-sun);--floor:var(--nest-floor);--floor-line:var(--nest-line)}
 .nest svg.scene{display:block;width:100%;height:auto}
 .nest .petwrap{cursor:pointer}
+.nestcat{cursor:pointer}
+.nest-heart{animation:nest-heart 1.6s ease-in-out infinite}
+@keyframes nest-heart{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 .bubble{position:relative;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:8px 12px;font-size:.95rem;box-shadow:3px 3px 0 var(--ink);min-width:0}
 .bubble .it{font:700 1.3rem/1.1 var(--font-hand);color:var(--blue)}
 .bubble .en{color:var(--muted);font-size:.8rem;margin-top:2px;line-height:1.3}
@@ -1510,7 +1513,7 @@ function nestScene(p){
   const keeps = P.keeps.map((k,i) => `<g transform="translate(${212 + i*24} 22)">${KEEP_SVG[k] || ''}</g>`).join('');
   const boxAt = (st, extra) => { const r = boxRects(P.egg ? P.egg.k : 'fuoco', st); return `<g transform="translate(108 66) scale(4)" shape-rendering="crispEdges"${extra || ''}>${r.flaps}${r.front}</g>`; };
   const smallBox = () => { const pct = P.egg.progress / P.egg.need, r = boxRects(P.egg.k, pct >= 0.8 ? 'half' : 'closed'); const paw = pct >= 0.8 ? `<g class="pawwag-s" transform="translate(14 82) scale(3)" shape-rendering="crispEdges">${pawRects(P.egg.k)}</g>` : ''; return `<g class="${pct >= 0.5 ? 'boxwob' : ''}"><g transform="translate(14 82) scale(3)" shape-rendering="crispEdges">${r.flaps}${r.front}</g>${paw}</g>`; };
-  const body = p ? (P.egg ? smallBox() : '')
+  const body = p ? (P.egg ? smallBox() : '') + catteryMarkup()
     : P.egg ? (() => { const pct = P.egg.progress / P.egg.need; const pal = catPal(P.egg.k); const paw = pct >= 0.8 ? `<g class="pawwag" transform="translate(108 66) scale(4)" shape-rendering="crispEdges">${pawRects(P.egg.k)}</g>` : ''; return `<g class="${pct >= 0.5 ? 'boxwob' : ''}">${boxAt(pct >= 0.8 ? 'half' : 'closed')}${paw}</g>`; })()
     : `<g opacity=".35">${boxAt('closed')}</g><text x="180" y="118" text-anchor="middle" font-size="26" font-family="var(--font-hand)" font-weight="700" fill="var(--muted)">?</text>`;
   svg.innerHTML = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient></defs>
@@ -1524,10 +1527,42 @@ function nestScene(p){
     ${body}`;
   return svg;
 }
+/* the cattery: all adopted cats in the nest, each in a resting pose; the companion sits in the middle */
+function catteryMarkup(){
+  const pets = P.pets.slice(); if (!pets.length) return '';
+  const act = pets.findIndex(x => x.id === P.active);
+  if (act >= 0){ const [a] = pets.splice(act, 1); pets.splice(Math.floor(pets.length / 2), 0, a); }
+  const n = pets.length, left = P.egg ? 118 : 14, right = 346, gap = 8;
+  const scale = Math.min(3, (right - left - (n - 1) * gap) / (32 * n));
+  const W = 32 * scale, total = n * W + (n - 1) * gap, x0 = left + (right - left - total) / 2;
+  const day = Number(today().slice(-2)) || 0, POSES = ['loaf', 'tailwrap', 'curl', 'sit', 'loaf'];
+  let out = '';
+  pets.forEach((pet, i) => {
+    const active = pet.id === P.active, pose = active ? 'sit' : POSES[(i + day) % POSES.length];
+    const x = x0 + i * (W + gap), y = 172 - 31 * scale, k = pet.id, pal = catPal(k), acc = {hat:pet.hat, neck:pet.neck};
+    const fr = fi => pxRects(pose === 'sit' ? catGrid(k, Object.assign({tail:fi}, acc)) : poseGrid(k, pose, fi, acc), pal);
+    const blink = pose === 'curl' ? '' : pxRects(pose === 'sit' ? catGrid(k, Object.assign({tail:0, face:'closed'}, acc)) : poseGrid(k, pose, 0, Object.assign({face:'closed'}, acc)), pal);
+    out += `<svg class="cat nestcat" data-pet="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${W.toFixed(1)}" height="${W.toFixed(1)}" style="width:${W.toFixed(1)}px;height:${W.toFixed(1)}px" viewBox="0 0 32 32" shape-rendering="crispEdges" role="img" aria-label="${pet.name}${active ? '，正在陪你' : '，点一下换它陪你'}"><g class="fr i0">${fr(0)}</g><g class="fr i1">${fr(1)}</g>${blink ? `<g class="fr fb">${blink}</g>` : ''}</svg>`;
+    const cx = x + W / 2;
+    if (active) out += `<g class="nest-heart" style="transform-origin:${cx.toFixed(1)}px ${(y - 2).toFixed(1)}px"><path transform="translate(${(cx - 5).toFixed(1)} ${(y - 10).toFixed(1)})" d="M5 9C2.6 7 0.5 5.4 0.5 3.4A2.4 2.4 0 0 1 5 2.2a2.4 2.4 0 0 1 4.5 1.2C9.5 5.4 7.4 7 5 9z" fill="#FF6B8B" stroke="#B4322A" stroke-width=".8"/></g>`;
+    out += `<text x="${cx.toFixed(1)}" y="${(172 + 14 + (n > 3 ? (i % 2) * 12 : 0)).toFixed(0)}" text-anchor="middle" font-size="${n > 3 ? 10 : 11}" font-weight="700" font-family="var(--font-display)" fill="var(--ink)" pointer-events="none">${pet.name}</text>`;
+  });
+  return out;
+}
+function nestCatTap(id){
+  const pet = P.pets.find(x => x.id === id); if (!pet) return;
+  if (P.active === id){ Compagno.pat(); return; }
+  P.active = id; AWAKE.add(id); save();
+  Compagno.refresh(); Compagno.mood('cheer', 1200); Compagno.hearts();
+  const old = $('.nest'); if (old) old.replaceWith(nestSection(currentLevel()));
+  Compagno.say(rnd([{it:'Eccomi! Tocca a me.', en:'我来了！轮到我陪你。'},{it:'Ciao! Andiamo insieme.', en:'嗨！我们一起走。'}]), 4500, SCREEN !== 'lesson');
+  toast(`${pet.name} 来陪你了。其他猫在小窝里等着。`, 'heart');
+}
 function nestSection(cur){
   const p = activePet();
   const wrap = h('section', {class:'nest ' + nestRegion()});
   const scene = nestScene(p);
+  scene.addEventListener('click', e => { const c = e.target.closest && e.target.closest('.nestcat'); if (c) nestCatTap(c.dataset.pet); });
   wrap.append(scene);
   if (!p){
     const bubble = h('div', {class:'bubble'});
@@ -1544,10 +1579,11 @@ function nestSection(cur){
     const lv = bondLevel(p), nextTh = BOND_TH[lv+1], bondPct = nextTh ? Math.round(100 * (p.bond - BOND_TH[lv]) / (nextTh - BOND_TH[lv])) : 100;
     const luce = h('span', {class:'luce', title:'光：每个完美的一天得 1 点。攒满 3 点，猫猫就能施展呼神护卫。'}, [0,1,2].map(i => h('i', {class: i < (P.luce || 0) ? 'on' : ''})), h('small', {class:'muted'}, ` ${Math.min(3, P.luce || 0)}/3 光`));
     bar.append(
-      h('div', {class:'who'}, h('b', {}, p.name), h('small', {}, `${FOLLETTI[p.id].breed} · ${FOLLETTI[p.id].el} · ${BOND_NAMES[lv][0]}（${BOND_NAMES[lv][1]}）· 它在右下角陪着你`),
+      h('div', {class:'who'}, h('b', {}, p.name), h('small', {}, `${FOLLETTI[p.id].breed} · ${FOLLETTI[p.id].el} · ${BOND_NAMES[lv][0]}（${BOND_NAMES[lv][1]}）· 它在右下角陪着你${P.pets.length > 1 ? ` · 小窝里还有 ${P.pets.length - 1} 只，点一下换它陪你` : ''}`),
         h('div', {class:'meter', title:'感情'}, h('span', {style:`width:${bondPct}%;background:var(--vowel)`}))),
       h('div', {class:'nest-actions'},
         h('button', {class:'btn btn-sm', onclick:() => openFeedSheet(p)}, icon('bag'), '喂零食'),
+        P.pets.length > 1 ? h('button', {class:'btn btn-sm', onclick:renderAlbum}, icon('book'), '猫舍') : null,
         h('button', {class:'btn btn-sm' + ((P.luce || 0) >= ECON.luceNeed && (P.scudo || 0) < ECON.scudoMax ? ' btn-primary' : ''), onclick:() => castPatronus(p), disabled:(P.luce || 0) < ECON.luceNeed || (P.scudo || 0) >= ECON.scudoMax, title:'需要 3 点光'}, icon('sparkle'), 'Expecto Patronum'),
         h('span', {class:'chip', title:'保护罩永久有效，不会减少：有几个，就算连续漏掉几天，连续天数也不断'}, icon('shield'), String(P.scudo || 0)), luce));
   } else if (P.egg){
@@ -1626,7 +1662,7 @@ function renderZaino(keep){
     sec('Casetta · 小窝装饰', null, h('div', {class:'list'}, decRows)),
     sec('Utili · 实用', null, h('div', {class:'list'}, h('div', {class:'row'}, icon('shield'), h('span', {class:'grow'}, h('b', {}, `保护罩 × ${P.scudo || 0}`), h('small', {}, (P.scudo || 0) ? `永久有效，不会减少：就算连续漏掉 ${P.scudo} 天，连续天数也不断。最多 ${ECON.scudoMax} 个。` : `永久有效，不会减少：有几个，就算连续漏掉几天，连续天数也不断。最多 ${ECON.scudoMax} 个。`)), h('button', {class:'btn btn-sm', onclick:() => renderShop('utili')}, '去买')),
       h('div', {class:'row'}, icon('sparkle'), h('span', {class:'grow'}, h('b', {}, `光 ${Math.min(3, P.luce || 0)} / 3`), h('small', {}, '每个完美的一天得 1 点。攒满 3 点，猫猫就能施展呼神护卫变出保护罩。'))))),
-    h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:() => renderShop()}, icon('bag'), 'Negozio · 商店'), h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Album · 猫猫相册'))];
+    h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:() => renderShop()}, icon('bag'), 'Negozio · 商店'), h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Gattile · 猫舍'))];
   if (keep && SCREEN === 'zaino') VIEW.replaceChildren(...nodes); else setView('zaino', ...nodes);
 }
 
@@ -1717,9 +1753,10 @@ function renderHatch(){
     const ok = h('button', {class:'btn btn-primary', onclick:() => {
       const name = (input.value || f.name).trim().slice(0,16) || f.name;
       const pet = {id:k, name, born:today(), bond:0, hat:null, neck:null}; AWAKE.add(k);
+      const prev = activePet();
       P.pets.push(pet); P.active = k; P.hatched = (P.hatched || 0) + 1; P.egg = null;
       save(); fx('win'); confetti();
-      toast(`欢迎你，${name}！`, 'heart');
+      toast(prev ? `欢迎你，${name}！${prev.name} 还在小窝里，点它就能换回来。` : `欢迎你，${name}！`, 'heart');
       renderHome();
     }}, 'Benvenuto! 欢迎！');
     form.replaceChildren(h('label', {for:'petname', class:'muted'}, '给它起个名字：'), input, ok); form.hidden = false;
@@ -1821,7 +1858,7 @@ function renderShop(tab){
     h('h1', {class:'page-title'}, 'Negozio · 商店'),
     h('p', {class:'muted', style:'margin:0'}, `你有 ${P.coins || 0} 金币。`, SHOP_TAB !== 'uova' && SHOP_TAB !== 'utili' ? `本周特价：${(SNACKS[disc] || ACCS[disc] || DECOR[disc]).it}，7 折。` : '每一枚金币都来自学习。'),
     tabs, grid,
-    h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:renderZaino}, icon('zaino'), 'Zaino · 背包'), h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Album · 猫猫相册')));
+    h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:renderZaino}, icon('zaino'), 'Zaino · 背包'), h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Gattile · 猫舍')));
 }
 function canBuyEgg(){ return !P.egg && P.pets.length < FOLL_ORDER.length; }
 
@@ -1867,8 +1904,8 @@ function renderAlbum(){
   });
   setView('album',
     h('button', {class:'btn btn-ghost', style:'margin-top:10px;padding-left:0', onclick:renderHome}, '← 回到旅程'),
-    h('h1', {class:'page-title'}, 'Album · 猫猫相册'),
-    h('p', {class:'muted', style:'margin:0'}, '五行五只，品种和性格各不相同。它们永远是小猫，长大的是你们的感情。'),
+    h('h1', {class:'page-title'}, 'Gattile · 猫舍'),
+    h('p', {class:'muted', style:'margin:0'}, `${P.pets.length ? `${P.pets.length} 只猫住在这里，都在首页的小窝里。` : ''}五行五只，品种和性格各不相同。它们永远是小猫，长大的是你们的感情。换一只陪你：点"换它陪我"，或者在首页小窝里点它。`),
     h('div', {class:'album'}, rows));
 }
 
@@ -2107,7 +2144,7 @@ function renderHome(){
     h('p', {class:'muted', style:'margin:0'}, '从 Venezia 到 Palermo 十二站，每个印章是一组发音。'),
     road,
     h('div', {class:'footer-links'},
-      h('button', {class:'btn', onclick:renderAlbum}, icon('book'), '猫猫相册'),
+      h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Gattile · 猫舍'),
       h('button', {class:'btn', onclick:renderMethod}, '这套方法的原理'),
       h('button', {class:'btn', onclick:renderSettings}, '设置和语音')),
     h('p', {class:'sync', 'data-sync':''}, syncText()));
