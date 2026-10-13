@@ -348,7 +348,15 @@ select{font:inherit;padding:.45rem .6rem;border-radius:10px;border:1.5px solid v
 .luce i{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
 .luce i.on{background:var(--lemon);box-shadow:0 0 6px var(--lemon)}
 .luce small{font-size:.75rem}
-.homecards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.homecards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.nest-box{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1.5px dashed var(--line);background:var(--card);font-size:.85rem}
+.nest-box .grow{flex:1;min-width:0}
+.nest-box .grow b{font:800 .95rem/1.2 var(--font-display)}
+.nest-box .grow small{font-size:.78rem}
+.nest-box .meter{margin-top:4px;max-width:260px}
+.nest-box>.ic svg{width:22px;height:22px}
+.pawwag-s{animation:paw-wag-s 2.4s steps(1,end) infinite}
+@keyframes paw-wag-s{0%,60%,100%{transform:translate(14px,82px) scale(3)}70%,90%{transform:translate(14px,78px) scale(3)}}
 .homecard{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);text-align:left;min-width:0}
 .homecard>.ic svg{width:28px;height:28px}
 .homecard b{display:block;font:800 1rem/1.1 var(--font-display)}
@@ -460,6 +468,7 @@ body.has-compagno .toasts{left:12px;transform:none;align-items:flex-start;width:
   .nest .bubble{font-size:.9rem;padding:6px 10px}
   .nest .bubble .it{font-size:1.15rem}
   .homecards{grid-template-columns:1fr 1fr}
+  .homecards .homecard:nth-child(3){grid-column:1/-1}
 }
 
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--lemon-soft)}50%{box-shadow:0 0 0 9px var(--lemon-soft)}}
@@ -499,7 +508,7 @@ body.has-compagno .toasts{left:12px;transform:none;align-items:flex-start;width:
 /* ============================================================
    CONTENT
    Word format: "ca-sa" = syllables; "ta*-vo-lo" = stress on marked syllable
-   (default: accented syllable, else second-to-last). "~word" = not a real word.
+   (default: accented syllable, else second-to-last). Every word in the lists is a real Italian word.
    ============================================================ */
 const LEVELS = [
 { id:1, city:'Venezia', it:'Le vocali', en:'五个元音', focus:null,
@@ -544,7 +553,7 @@ const LEVELS = [
     {t:'在辅音前面也一样', b:'C 和 G 在 L、R 前面保持硬音。', ex:['cre-ma','cli-ma','gran-de','glo-ria'], tip:'GL 后面跟 O，是硬 G 加 L。'},
     {t:'意大利语没有字母 K', b:'意大利语用 C 写 K 的音，还有后面会学的 CH。K、J、W、X、Y 只出现在外来词里。', ex:['ca-ne','co-da','cuo-re'], tip:'C 就是意大利语的 K。'}
   ],
-  listen:[['gola','cola'],['gallo','callo'],['gara','cara'],['coda','cosa'],{t:'gatto',d:['~catto']},{t:'gufo',d:['~cufo']},{t:'cubo',d:['~gubo']},{t:'lago',d:['~laco']},{t:'amico',d:['~amigo']}],
+  listen:[['gola','cola'],['gallo','callo'],['gara','cara'],['coda','cosa'],['gatto','gatta'],['gufo','tufo'],['cubo','tubo'],['lago','mago'],['amico','amica']],
   read:['ca-sa','ca-ne','cu-bo','co-da','gat-to','gu-fo','gam-ba','la-go','cre-ma','gran-de'],
   build:['ca-sa','ca-ne','cu-bo','gat-to','gu-fo','gam-ba','la-go','gran-de','a-mi-co'],
   game:{type:'balloons'} },
@@ -556,7 +565,7 @@ const LEVELS = [
     {t:'不发音的 I 让它保持软音', b:'要在 A、O、U 前面得到 ch 或 j 的音，意大利语会加一个不读的 I：ciao 读"qiao"，giallo 读"jallo"。', ex:['cia-o','cioc-co-la-to','gial-lo','gior-no','giu-sto'], tip:'这个应用里灰色的字母是不发音的。'},
     {t:'一个字母，两个音', b:'同一个 C 随后面的元音变化：amico 里是 K，amici 里是 ch。cara 是硬音，cera 是软音。', ex:['a-mi-co','a-mi-ci','ca-ra','ce-ra','gal-lo','gial-lo'], tip:'C 和 G 永远要连着后面的字母一起读。'}
   ],
-  listen:[['giallo','gallo'],['giusto','gusto'],['bacio','baco'],['cacio','caco'],['cera','cara'],['cento','canto'],['certo','corto'],{t:'ciao',d:['~cao','~chao']}],
+  listen:[['giallo','gallo'],['giusto','gusto'],['bacio','baco'],['cacio','caco'],['cera','cara'],['cento','canto'],['certo','corto'],['ciao','caos']],
   read:['ce-na','ci*-ne-ma','cia-o','die-ci','ci-bo','ge-la-to','gi-ta','gior-no','gial-lo','cioc-co-la-to','pa*-gi-na','a-ran-cia'],
   build:['ce-na','ci*-ne-ma','ge-la-to','gior-no','gial-lo','cioc-co-la-to','a-ran-cia','va-li-gia'],
   game:{type:'sort', mode:'see', q:'读这个词。它的 C 或 G 是硬音还是软音？', buckets:[['硬音','K，或 go 里的 G'],['软音','ch，或 j']],
@@ -569,7 +578,7 @@ const LEVELS = [
     {t:'Cina 还是 china？', b:'一个不发音的字母就让读音翻转。Cina（中国）开头是 ch，china（墨水）开头是 K。giro 开头是 j，ghiro（睡鼠）开头是硬 G。', ex:['Ci-na','chi-na','gi-ro','ghi-ro'], tip:'找 H。'},
     {t:'单独的 H 不发音', b:'词首的 H 完全不发音：ho、hai、ha。连 hotel 都读"otel"。', ex:['ho','hai','ha','ho-tel*'], tip:'lago 变成 laghi 还是硬音；amico 变成 amici 就变软了。'}
   ],
-  listen:[['china','Cina'],['chi','ci'],['ghiro','giro'],['ghetto','getto'],{t:'chiave',d:['~ciave']},{t:'perché',d:['~percé']},{t:'spaghetti',d:['~spagetti']},{t:'laghi',d:['~lagi']},{t:'anche',d:['~ance']}],
+  listen:[['china','Cina'],['chi','ci'],['ghiro','giro'],['ghetto','getto'],['marche','marce'],['amiche','amici'],['chiave','chiavi'],['spaghetti','spaghetto'],['laghi','larghi'],['anche','anca']],
   read:['che','chi','per-ché','an-che','chia-ve','chie-sa','Mi-che-le','spa-ghet-ti','ghiac-cio','la-ghi','fun-ghi','ho'],
   build:['chia-ve','chie-sa','an-che','per-ché','spa-ghet-ti','ghiac-cio','la-ghi','fun-ghi'],
   game:{type:'sort', mode:'see', q:'读这个词。它的 C 或 G 是硬音还是软音？', buckets:[['硬音','K，或 go 里的 G'],['软音','ch，或 j']],
@@ -594,7 +603,7 @@ const LEVELS = [
     {t:'GL 在其他元音前', b:'只有 GLI 是软音。在 A、E、O、U 前面听到的是硬 G 加 L：globo、inglese。', ex:['glo-bo','in-gle-se','glo-ria'], tip:'GLI 软，GLO 硬。'},
     {t:'听出区别', b:'sono / sogno · campana / campagna · fili / figli。软音一变，词义就变。', ex:['so-no','so-gno','cam-pa-na','cam-pa-gna','fi-li','fi-gli'], tip:'听舌头滑进 y 的那一下。'}
   ],
-  listen:[['sono','sogno'],['campana','campagna'],['lena','legna'],['fili','figli'],['ali','agli'],['mole','moglie'],{t:'gnocchi',d:['~nocchi']},{t:'famiglia',d:['~familia']},{t:'lavagna',d:['~lavana']}],
+  listen:[['sono','sogno'],['campana','campagna'],['lena','legna'],['fili','figli'],['ali','agli'],['mole','moglie'],['gnocchi','occhi'],['famiglia','famiglie'],['lavagna','lasagna']],
   read:['gnoc-chi','ba-gno','so-gno','la-va-gna','mon-ta-gna','si-gno-ra','Bo-lo-gna','fi-glio','fo-glia','fa-mi-glia','a-glio','lu-glio','me-glio','in-gle-se'],
   build:['gnoc-chi','ba-gno','so-gno','la-va-gna','mon-ta-gna','si-gno-ra','fi-glio','fo-glia','fa-mi-glia','a-glio'],
   game:{type:'sort', mode:'hear', q:'听。是普通的 N 或 L，还是软音 GN 或 GLI？', buckets:[['普通','N 或 L'],['软音','GN 或 GLI']],
@@ -607,7 +616,7 @@ const LEVELS = [
     {t:'SCH 读"sk"', b:'H 让它保持硬音：schiena 读"skyena"。', ex:['schie-na','scher-zo','ma*-sche-ra','pe-sche'], tip:'C 后面的 H 永远表示 K。'},
     {t:'SC + A、O、U 读"sk"', b:'scarpa、scuola、Toscana。', ex:['scar-pa','scuo-la','ta-sca','To-sca-na'], tip:'pesce（鱼）还是 pesche（桃子）？sciarpa（围巾）还是 scarpa（鞋）？'}
   ],
-  listen:[['pesce','pesche'],['lisce','lische'],['mosca','moscia'],['scocca','sciocca'],['sciarpa','scarpa'],{t:'scena',d:['~schena']},{t:'schiena',d:['~sciena']},{t:'uscita',d:['~uschita']}],
+  listen:[['pesce','pesche'],['lisce','lische'],['mosca','moscia'],['scocca','sciocca'],['sciarpa','scarpa'],['scena','schema'],['schiena','scena'],['uscita','uscite']],
   read:['sce-na','sci','pe-sce','u-sci-ta','pi-sci-na','sciar-pa','schie-na','scher-zo','ma*-sche-ra','scar-pa','scuo-la','To-sca-na'],
   build:['sce-na','pe-sce','u-sci-ta','pi-sci-na','sciar-pa','schie-na','scher-zo','ma*-sche-ra','scar-pa','scuo-la'],
   game:{type:'sort', mode:'see', q:'读这个词。它的 SC 读"sh"还是"sk"？', buckets:[['sh','像 shell'],['sk','像 sky']],
@@ -633,7 +642,7 @@ const LEVELS = [
     {t:'两个元音之间，看地方', b:'在北方，casa 和 rosa 里的 s 是浊音 z；在中部和南部大多是清音 s。两种都对。', ex:['ca-sa','ro-sa','me-se'], tip:'选一种，保持一致。'},
     {t:'Z 读"ts"或"dz"', b:'意大利语的 Z 要么是"ts"（像拼音的 z：pizza、grazie、stazione），要么是"dz"（拼音 z 加声带振动：zero、zanzara、zaino）。因词、因地区而异，所以一个词一个词地用耳朵记。词尾 -zione 永远是"ts"。', ex:['piz-za','gra-zie','sta-zio-ne','ze-ro','zan-za-ra','zai-no'], tip:'"ts"像拼音 z（"资"的声母），"dz"是它振动的版本。'}
   ],
-  listen:[['mezzo','messo'],['pazzo','passo'],['pozzo','posso'],['tazza','tassa'],['zeta','seta'],['coro','corro'],['poro','porro'],{t:'zio',d:['~sio']},{t:'grazie',d:['~grasie']}],
+  listen:[['mezzo','messo'],['pazzo','passo'],['pozzo','posso'],['tazza','tassa'],['zeta','seta'],['coro','corro'],['poro','porro'],['zio','mio'],['grazie','grazia']],
   read:['so-le','ros-so','sas-so','sba-glio','slit-ta','smet-to','piz-za','gra-zie','zi-o','sta-zio-ne','ze-ro','zan-za-ra','mez-zo','zai-no','Ro-ma','ter-ra'],
   build:['piz-za','gra-zie','sta-zio-ne','ze-ro','zan-za-ra','zai-no','sba-glio','sve-glia','ros-so','ter-ra'],
   game:{type:'tombola'} },
@@ -646,7 +655,7 @@ const LEVELS = [
     {t:'重音会改变意思', b:'papa（教皇）/ papà（爸爸）· pero（梨树）/ però（但是）· meta（目标）/ metà（一半）。', ex:['pa-pa','pa-pà','pe-ro','pe-rò','me-ta','me-tà'], tip:'叫爸爸要说 papà，不是 papa。'},
     {t:'问句往上扬', b:'同样的词可以是陈述也可以是疑问，只有语调不同。', ex:[{s:'Hai fame.', w:'Hai fame.', g:'你饿了。'},{s:'Hai fame?', w:'Hai fame?', g:'你饿了吗？'}], tip:'问句结尾让声音往上爬。'}
   ],
-  listen:[['papa','papà'],['pero','però'],['meta','metà'],['capi','capì'],{t:'città',d:['~citta']},{t:'caffè',d:['~caffe']},{t:'perché',d:['~perche']},{t:'università',d:['~universita']}],
+  listen:[['papa','papà'],['pero','però'],['meta','metà'],['capi','capì'],['calamita','calamità'],['canto','cantò'],['parlo','parlò'],['mangio','mangiò']],
   read:['cit-tà','caf-fè','per-ché','pa-pà','ta*-vo-lo','te-le*-fo-no','mac*-chi-na','mu*-si-ca','sa*-ba-to','ca*-me-ra','ge-la-to','pa-ro-la'],
   build:['cit-tà','caf-fè','per-ché','ta*-vo-lo','te-le*-fo-no','mac*-chi-na','mu*-si-ca','sa*-ba-to','pa-ro-la'],
   game:{type:'stress', pool:['ca-sa','a-mi-co','ge-la-to','ta*-vo-lo','te-le*-fo-no','mac*-chi-na','mu*-si-ca','cit-tà','caf-fè','per-ché','pa-pà','pa-pa','u-ni-ver-si-tà','sa*-ba-to','ca*-me-ra','pe-ro','pe-rò','me-ta','me-tà','pa-ro-la','fi-ne-stra','po-mo-do-ro','cioc-co-la-to','ca-pi-to','pa*-gi-na','ci*-ne-ma','i*-so-la','ma*-sche-ra']} }
@@ -669,6 +678,9 @@ const GLOSS = {
   gelato:'冰淇淋', gita:'郊游', gente:'人们', giro:'兜一圈；轮到', ciao:'你好；再见', cioccolato:'巧克力', giallo:'黄色',
   giorno:'天；白天', giusto:'正确的；公平的', amici:'朋友（复数）', cera:'蜡', gusto:'口味', bacio:'吻', baco:'蚕', cacio:'奶酪',
   caco:'柿子', cento:'一百', canto:'歌；我唱', certo:'当然', corto:'短', pagina:'页', arancia:'橙子',
+  gatta:'母猫', tufo:'凝灰岩', tubo:'管子', mago:'魔法师', amica:'朋友（阴性）', caos:'混乱', marche:'品牌（复数）；马尔凯大区', marce:'挡位；进行曲（复数）',
+  chiavi:'钥匙（复数）', spaghetto:'一根意面', larghi:'宽的（复数）', anca:'髋部', occhi:'眼睛（复数）', famiglie:'家庭（复数）', lasagna:'千层面', schema:'示意图；方案', uscite:'出口（复数）',
+  mio:'我的', grazia:'优雅；恩惠', calamita:'磁铁', 'calamità':'灾难', 'cantò':'他/她唱了', parlo:'我说', 'parlò':'他/她说了', mangio:'我吃', 'mangiò':'他/她吃了',
   valigia:'行李箱', poco:'一点', luce:'光', barca:'船', che:'那个；什么', chi:'谁', anche:'也', chiave:'钥匙', chiesa:'教堂',
   spaghetti:'意大利面条', ghiaccio:'冰', laghi:'湖（复数）', funghi:'蘑菇（复数）', Cina:'中国', china:'墨水；斜坡', ghiro:'睡鼠', ho:'我有',
   hai:'你有', ha:'他/她有', hotel:'酒店', ci:'我们；那里', ghetto:'犹太区', getto:'喷射', 'perché':'为什么；因为', michele:'米凯莱（人名）',
@@ -694,7 +706,6 @@ const GLOSS = {
   macchina:'汽车', musica:'音乐', sabato:'星期六', camera:'房间', parola:'词', pero:'梨树', 'però':'但是', 'metà':'一半', capi:'老板们',
   'capì':'他/她明白了', finestra:'窗户', pomodoro:'西红柿', capito:'明白了'
 };
-const PSEUDO_NOTE = { amigo:'那是西班牙语，不是意大利语。', familia:'那是西班牙语，不是意大利语。', chao:'不是意大利语：CH 永远读 K。' };
 
 const PRAISE = [['Esatto!','完全正确。'],['Perfetto!','完美。'],['Ottimo!','太棒了。'],['Che orecchio!','好耳朵！'],['Fantastico!','了不起。'],['Giusto!','对了。'],['Benissimo!','非常好。'],['Grande!','真棒。'],['Evviva!','万岁！']];
 const OOPS = [['Quasi!','差一点。'],['Riprova!','下次一定行。'],['Piano piano.','慢慢来。'],['Nessun problema.','没关系。'],['Sbagliando s’impara.','犯错也是在学习。'],['Ascolta ancora.','再听一遍。']];
@@ -805,7 +816,7 @@ function wordEl(w, o={}){
   }
   return root;
 }
-function glossText(p){ if (p.pseudo) return PSEUDO_NOTE[p.text] || '不是真正的意大利语单词。'; return p.gloss || ''; }
+function glossText(p){ if (p.pseudo) return '这样拼不是一个词。'; return p.gloss || ''; }
 
 /* ---------- icons ---------- */
 const ICONS = {
@@ -828,6 +839,7 @@ const ICONS = {
   scroll:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2" fill="#FFF0BC" stroke="#7A5A00" stroke-width="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4" stroke="#7A5A00" stroke-width="2" stroke-linecap="round"/><path d="M15 15.2l1.4 1.4 2.6-2.8" fill="none" stroke="#1D8350" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   sparkle:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z" fill="#BFD9FF" stroke="#2140AE" stroke-width="1.8" stroke-linejoin="round"/><path d="M19 17l.8 2.2 2.2.8-2.2.8L19 23l-.8-2.2-2.2-.8 2.2-.8z" fill="#2140AE"/></svg>',
   egg:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8c3.6 0 6.5 5 6.5 10.4A6.5 6.5 0 0 1 12 20.7a6.5 6.5 0 0 1-6.5-7.5C5.5 7.8 8.4 2.8 12 2.8z" fill="#FFD9C6" stroke="#E8734F" stroke-width="2"/><ellipse cx="9.6" cy="8.5" rx="1.3" ry="2.4" transform="rotate(-18 9.6 8.5)" fill="#fff" opacity=".8"/></svg>',
+  zaino:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5a6 6 0 0 1 12 0V20a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 20z" fill="#5B7CFA" stroke="#1C2552" stroke-width="2" stroke-linejoin="round"/><path d="M9 4.5a3 3 0 0 1 6 0" fill="none" stroke="#1C2552" stroke-width="2" stroke-linecap="round"/><rect x="8" y="13" width="8" height="5.5" rx="1.5" fill="#FFF0BC" stroke="#1C2552" stroke-width="1.8"/></svg>',
   book:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2h-6zM19.5 4.5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z" fill="#E3E9FB" stroke="#2140AE" stroke-width="2" stroke-linejoin="round"/><path d="M7 8.5h3M7 11.5h3M14 8.5h3M14 11.5h3" stroke="#2140AE" stroke-width="1.6" stroke-linecap="round"/></svg>'
 };
 function icon(n, cls){ const s = h('span', {class:'ic' + (cls ? ' ' + cls : '')}); s.innerHTML = ICONS[n]; return s; }
@@ -1467,7 +1479,8 @@ function nestScene(p){
   const decor = Object.keys(DECOR).filter(k => P.decor.includes(k)).map(k => `<g transform="translate(${DECOR[k].at[0]} ${DECOR[k].at[1]})">${DECOR_SVG[k]}</g>`).join('');
   const keeps = P.keeps.map((k,i) => `<g transform="translate(${212 + i*24} 22)">${KEEP_SVG[k] || ''}</g>`).join('');
   const boxAt = (st, extra) => { const r = boxRects(P.egg ? P.egg.k : 'fuoco', st); return `<g transform="translate(108 66) scale(4)" shape-rendering="crispEdges"${extra || ''}>${r.flaps}${r.front}</g>`; };
-  const body = p ? ''
+  const smallBox = () => { const pct = P.egg.progress / P.egg.need, r = boxRects(P.egg.k, pct >= 0.8 ? 'half' : 'closed'); const paw = pct >= 0.8 ? `<g class="pawwag-s" transform="translate(14 82) scale(3)" shape-rendering="crispEdges">${pawRects(P.egg.k)}</g>` : ''; return `<g class="${pct >= 0.5 ? 'boxwob' : ''}"><g transform="translate(14 82) scale(3)" shape-rendering="crispEdges">${r.flaps}${r.front}</g>${paw}</g>`; };
+  const body = p ? (P.egg ? smallBox() : '')
     : P.egg ? (() => { const pct = P.egg.progress / P.egg.need; const pal = catPal(P.egg.k); const paw = pct >= 0.8 ? `<g class="pawwag" transform="translate(108 66) scale(4)" shape-rendering="crispEdges">${pawRects(P.egg.k)}</g>` : ''; return `<g class="${pct >= 0.5 ? 'boxwob' : ''}">${boxAt(pct >= 0.8 ? 'half' : 'closed')}${paw}</g>`; })()
     : `<g opacity=".35">${boxAt('closed')}</g><text x="180" y="118" text-anchor="middle" font-size="26" font-family="var(--font-hand)" font-weight="700" fill="var(--muted)">?</text>`;
   svg.innerHTML = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient></defs>
@@ -1509,13 +1522,19 @@ function nestSection(cur){
         h('span', {class:'chip', title:'保护罩：漏掉一天时自动用掉一个，连续天数不断'}, icon('shield'), String(P.scudo || 0)), luce));
   } else if (P.egg){
     const pct = Math.round(100 * P.egg.progress / P.egg.need);
-    bar.append(h('div', {class:'who'}, h('b', {}, `${FOLLETTI[P.egg.k].el} 的纸箱`), h('small', {}, `它在熟悉你 · ${P.egg.progress} / ${P.egg.need}`), h('div', {class:'meter'}, h('span', {style:`width:${pct}%`}))),
+    bar.append(h('div', {class:'who'}, h('b', {}, `${FOLLETTI[P.egg.k].en}之箱`), h('small', {}, `它在熟悉你 · ${P.egg.progress} / ${P.egg.need}`), h('div', {class:'meter'}, h('span', {style:`width:${pct}%`}))),
       h('div', {class:'nest-actions'}, eggReady() ? h('button', {class:'btn btn-sm btn-primary', onclick:renderHatch}, icon('egg'), 'Apri la scatola · 开箱') : h('span', {class:'muted', style:'font-size:.85rem'}, '每上一步课，它就多信任你一点。')));
   } else {
     bar.append(h('div', {class:'who'}, h('b', {}, '你的第一只猫'), h('small', {}, '一只小猫，陪你一起学意大利语。')),
       h('div', {class:'nest-actions'}, h('button', {class:'btn btn-sm btn-primary', onclick:() => renderShop('uova')}, icon('egg'), '去挑一个纸箱')));
   }
   wrap.append(bar);
+  if (p && P.egg){
+    const pct = Math.round(100 * P.egg.progress / P.egg.need);
+    wrap.append(h('div', {class:'nest-box'}, icon('egg'),
+      h('span', {class:'grow'}, h('b', {}, `${FOLLETTI[P.egg.k].en}之箱`), h('small', {class:'muted'}, eggReady() ? ' · 可以开箱了！' : ` · 它在熟悉你 · ${P.egg.progress} / ${P.egg.need}`), h('div', {class:'meter'}, h('span', {style:`width:${pct}%`}))),
+      eggReady() ? h('button', {class:'btn btn-sm btn-primary', onclick:renderHatch}, 'Apri · 开箱') : h('button', {class:'btn btn-sm', onclick:renderZaino}, '背包')));
+  }
   return wrap;
 }
 function homeCards(){
@@ -1523,7 +1542,62 @@ function homeCards(){
   const d = P.quests.daily, done = d.list.filter(q => q.done).length;
   return h('div', {class:'homecards'},
     h('button', {class:'homecard', onclick:renderQuests}, icon('scroll'), h('span', {style:'min-width:0'}, h('b', {}, 'Missioni · 任务'), h('small', {}, `今天 ${done} / ${d.list.length}${d.perfect ? ' · 完美！' : ''}`))),
-    h('button', {class:'homecard', onclick:() => renderShop()}, icon('bag'), h('span', {style:'min-width:0'}, h('b', {}, 'Negozio · 商店'), h('small', {}, `${P.coins || 0} 金币`))));
+    h('button', {class:'homecard', onclick:() => renderShop()}, icon('bag'), h('span', {style:'min-width:0'}, h('b', {}, 'Negozio · 商店'), h('small', {}, `${P.coins || 0} 金币`))),
+    h('button', {class:'homecard', onclick:renderZaino}, icon('zaino'), h('span', {style:'min-width:0'}, h('b', {}, 'Zaino · 背包'), h('small', {}, zainoSummary()))));
+}
+function zainoSummary(){
+  const snacks = Object.values(P.inv.snacks || {}).reduce((a,b) => a + (b || 0), 0);
+  if (P.egg) return eggReady() ? '纸箱可以开了！' : `纸箱 ${Math.round(100 * P.egg.progress / P.egg.need)}%`;
+  const parts = []; if (snacks) parts.push(`${snacks} 零食`); if ((P.inv.acc || []).length) parts.push(`${P.inv.acc.length} 配饰`); if ((P.scudo || 0) > 0) parts.push(`${P.scudo} 保护罩`);
+  return parts.length ? parts.join(' · ') : '你买过的东西';
+}
+/* ---------- Zaino · backpack: everything you own, with what you can do with it ---------- */
+function renderZaino(keep){
+  renderTopbar();
+  const p = activePet();
+  const sec = (title, sub, ...kids) => h('div', {}, h('h2', {class:'section-title'}, title), sub ? h('p', {class:'muted', style:'margin:0 0 6px'}, sub) : null, ...kids);
+  const list = h('div', {class:'list'});
+  // box in progress
+  let boxPart;
+  if (P.egg){
+    const pct = Math.round(100 * P.egg.progress / P.egg.need), f = FOLLETTI[P.egg.k];
+    boxPart = h('div', {class:'row'}, boxSVG(P.egg.k, eggReady() ? 'half' : 'closed', {style:'width:72px;height:60px;flex:none'}),
+      h('span', {class:'grow'}, h('b', {}, `Scatola ${f.el.toLowerCase()} · ${f.en}之箱`), h('small', {}, eggReady() ? '里面的猫已经信任你了，可以开箱。' : `它在熟悉你 · ${P.egg.progress} / ${P.egg.need}。上课、复习和任务都会增加信任。`), h('div', {class:'meter'}, h('span', {style:`width:${pct}%`}))),
+      eggReady() ? h('button', {class:'btn btn-sm btn-primary', onclick:renderHatch}, 'Apri · 开箱') : null);
+  } else if (canBuyEgg()){
+    boxPart = h('div', {class:'row'}, icon('egg'), h('span', {class:'grow'}, h('b', {}, '没有正在熟悉你的纸箱'), h('small', {}, P.pets.length ? '商店里还有别的猫。' : '第一个纸箱是送你的。')), h('button', {class:'btn btn-sm btn-primary', onclick:() => renderShop('uova')}, '去商店'));
+  } else {
+    boxPart = h('p', {class:'muted', style:'margin:0'}, '五只猫都到家了。');
+  }
+  // snacks
+  const have = Object.keys(SNACKS).filter(k => (P.inv.snacks[k] || 0) > 0);
+  const snackRows = have.length ? have.map(k => h('div', {class:'row'}, snackIcon(k), h('span', {class:'grow'}, h('b', {}, SNACKS[k].it, p && FOLLETTI[p.id].snack === k ? ' ♥' : ''), h('small', {}, `${SNACKS[k].en} · 还有 ${P.inv.snacks[k]} 个`)),
+      h('button', {class:'btn btn-sm', disabled:!p, title: p ? '' : '还没有猫', onclick:() => { feed(p, k); renderZaino(true); }}, p ? `喂${p.name}` : '喂')))
+    : [h('div', {class:'row'}, h('span', {class:'grow muted'}, '还没有零食。'), h('button', {class:'btn btn-sm', onclick:() => renderShop('snack')}, '去买'))];
+  // accessories
+  const accRows = (P.inv.acc || []).length ? P.inv.acc.map(k => { const a = ACCS[k]; if (!a) return null; const worn = p && p[a.slot] === k;
+      const pic = catSVG(p ? p.id : 'fuoco', {[a.slot]:k, cls:'still'}, {style:'width:56px;height:56px;flex:none'});
+      return h('div', {class:'row'}, pic, h('span', {class:'grow'}, h('b', {}, a.it), h('small', {}, `${a.en} · ${a.slot === 'hat' ? '头顶' : '脖子'}${worn ? ' · 戴着' : ''}`)),
+        p ? h('button', {class:'btn btn-sm' + (worn ? '' : ' btn-primary'), onclick:() => { p[a.slot] = worn ? null : k; save(); Compagno.refresh(); renderZaino(true); }}, worn ? '摘下' : '戴上') : null); })
+    : [h('div', {class:'row'}, h('span', {class:'grow muted'}, '还没有配饰。'), h('button', {class:'btn btn-sm', onclick:() => renderShop('accessori')}, '去买'))];
+  // decorations
+  const decAll = Object.keys(DECOR).filter(k => P.decor.includes(k) || P.inv.decorOff.includes(k));
+  const decRows = decAll.length ? decAll.map(k => { const d = DECOR[k], on = P.decor.includes(k);
+      return h('div', {class:'row'}, h('span', {class:'grow'}, h('b', {}, d.it), h('small', {}, `${d.en} · ${on ? '在小窝里' : '收起来了'}`)),
+        h('button', {class:'btn btn-sm' + (on ? '' : ' btn-primary'), onclick:() => { if (on){ P.decor = P.decor.filter(x => x !== k); P.inv.decorOff.push(k); } else { P.inv.decorOff = P.inv.decorOff.filter(x => x !== k); P.decor.push(k); } save(); renderZaino(true); }}, on ? '收起来' : '放回去')); })
+    : [h('div', {class:'row'}, h('span', {class:'grow muted'}, '还没有小窝装饰。'), h('button', {class:'btn btn-sm', onclick:() => renderShop('casetta')}, '去买'))];
+  const nodes = [
+    h('button', {class:'btn btn-ghost', style:'margin-top:10px;padding-left:0', onclick:renderHome}, '← 回到旅程'),
+    h('h1', {class:'page-title'}, 'Zaino · 背包'),
+    h('p', {class:'muted', style:'margin:0'}, '你买过的东西都在这里：零食直接喂，配饰直接戴，纸箱在这儿看进度。'),
+    sec('Scatola · 纸箱', null, h('div', {class:'list'}, boxPart)),
+    sec('Snack · 零食', null, h('div', {class:'list'}, snackRows)),
+    sec('Accessori · 配饰', null, h('div', {class:'list'}, accRows)),
+    sec('Casetta · 小窝装饰', null, h('div', {class:'list'}, decRows)),
+    sec('Utili · 实用', null, h('div', {class:'list'}, h('div', {class:'row'}, icon('shield'), h('span', {class:'grow'}, h('b', {}, `保护罩 × ${P.scudo || 0}`), h('small', {}, '漏掉一天时自动用掉一个，连续天数不断。')), h('button', {class:'btn btn-sm', onclick:() => renderShop('utili')}, '去买')),
+      h('div', {class:'row'}, icon('sparkle'), h('span', {class:'grow'}, h('b', {}, `光 ${Math.min(3, P.luce || 0)} / 3`), h('small', {}, '每个完美的一天得 1 点。攒满 3 点，猫猫就能施展呼神护卫变出保护罩。'))))),
+    h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:() => renderShop()}, icon('bag'), 'Negozio · 商店'), h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Album · 猫猫相册'))];
+  if (keep && SCREEN === 'zaino') VIEW.replaceChildren(...nodes); else setView('zaino', ...nodes);
 }
 
 /* ---------- feeding ---------- */
@@ -1665,22 +1739,28 @@ function priceEl(id, base){ const p = priceOf(id, base); return h('span', {class
 let SHOP_TAB = 'uova';
 function renderShop(tab){
   if (tab) SHOP_TAB = tab;
-  if (SHOP_TAB === 'uova' && P.pets.length && !canBuyEgg()) SHOP_TAB = P.pets.length ? 'snack' : 'uova';
+  if (SHOP_TAB === 'uova' && !canBuyEgg() && !P.egg) SHOP_TAB = 'snack';
   renderTopbar();
   const TABS = [['uova','Scatole','纸箱'],['snack','Snack','零食'],['accessori','Accessori','配饰'],['casetta','Casetta','小窝'],['utili','Utili','实用']];
-  const tabs = h('div', {class:'tabs', role:'tablist'}, TABS.map(([id,it,en]) => h('button', {class:'tab', role:'tab', 'aria-selected': SHOP_TAB === id, onclick:() => renderShop(id)}, `${it} · ${en}`)));
+  const tabs = h('div', {class:'tabs', role:'tablist'}, TABS.map(([id,it,en]) => h('button', {class:'tab', role:'tab', 'aria-selected': SHOP_TAB === id ? 'true' : 'false', onclick:() => renderShop(id)}, `${it} · ${en}`)));
   const grid = h('div', {class:'items'});
   const disc = discountId();
   const buy = (price, fn) => { if (!spend(price)){ toast('金币还不够。上课和做任务都能赚。', 'coin'); fx('bad'); return; } fn(); fx('coin'); save(); renderShop(); };
   if (SHOP_TAB === 'uova'){
     const n = P.pets.length + (P.egg ? 1 : 0), price = ECON.eggPrice[Math.min(n, ECON.eggPrice.length-1)], need = ECON.eggNeed[Math.min(n, ECON.eggNeed.length-1)];
     grid.append(h('p', {class:'muted', style:'grid-column:1/-1;margin:0;font-size:.9rem'}, '每个纸箱里有一只猫。箱子上的标签颜色是它的五行，打开之前不知道是哪一种猫。'));
+    if (P.egg){
+      const pct = Math.round(100 * P.egg.progress / P.egg.need);
+      grid.append(h('div', {class:'row', style:'grid-column:1/-1'}, boxSVG(P.egg.k, eggReady() ? 'half' : 'closed', {style:'width:64px;height:54px;flex:none'}),
+        h('span', {class:'grow'}, h('b', {}, `你领回家的${FOLLETTI[P.egg.k].en}之箱`), h('small', {}, eggReady() ? '可以开箱了！' : `它在熟悉你 · ${P.egg.progress} / ${P.egg.need} · 在首页小窝和背包里都能看到`), h('div', {class:'meter'}, h('span', {style:`width:${pct}%`}))),
+        eggReady() ? h('button', {class:'btn btn-sm btn-primary', onclick:renderHatch}, 'Apri · 开箱') : h('button', {class:'btn btn-sm', onclick:renderZaino}, '背包')));
+    }
     FOLL_ORDER.forEach(k => {
       const f = FOLLETTI[k], owned = P.pets.some(p => p.id === k), inc = P.egg && P.egg.k === k;
       const btn = owned ? h('span', {class:'muted', style:'font-size:.85rem'}, `${P.pets.find(p => p.id === k).name} 就是从这个箱子里出来的。`)
-        : inc ? h('span', {class:'muted', style:'font-size:.85rem'}, '在你的小窝里，正在熟悉你。')
+        : inc ? h('span', {class:'muted', style:'font-size:.85rem'}, '已经领回家了，在小窝里慢慢熟悉你。')
         : P.egg ? h('span', {class:'muted', style:'font-size:.85rem'}, '一次只能领一个箱子。')
-        : h('button', {class:'btn btn-primary btn-sm', onclick:() => buy(price, () => { P.egg = {k, progress:0, need, got:today()}; toast(price ? `${f.el} 的纸箱搬回家了。上课会让它慢慢信任你。` : '第一个纸箱是送你的。上课会让里面的猫慢慢信任你。', 'egg'); SHOP_TAB = 'uova'; })}, price ? '领回家' : '收下，这是礼物');
+        : h('button', {class:'btn btn-primary btn-sm', onclick:() => buy(price, () => { P.egg = {k, progress:0, need, got:today()}; toast(price ? `${f.el} 的纸箱搬回家了，在首页小窝和背包里。上课会让它慢慢信任你。` : '第一个纸箱是送你的。上课会让里面的猫慢慢信任你。', 'egg'); SHOP_TAB = 'uova'; })}, price ? '领回家' : '收下，这是礼物');
       grid.append(h('div', {class:'item'}, h('div', {class:'pic box'}, boxSVG(k, 'closed')), h('b', {}, `Scatola ${f.el.toLowerCase()} · ${f.en}之箱`), h('small', {}, f.hint), h('div', {class:'price'}, icon('coin'), price ? String(price) : '免费'), btn));
     });
   } else if (SHOP_TAB === 'snack'){
@@ -1711,7 +1791,7 @@ function renderShop(tab){
     h('h1', {class:'page-title'}, 'Negozio · 商店'),
     h('p', {class:'muted', style:'margin:0'}, `你有 ${P.coins || 0} 金币。`, SHOP_TAB !== 'uova' && SHOP_TAB !== 'utili' ? `本周特价：${(SNACKS[disc] || ACCS[disc] || DECOR[disc]).it}，7 折。` : '每一枚金币都来自学习。'),
     tabs, grid,
-    h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Album · 猫猫相册')));
+    h('div', {class:'footer-links'}, h('button', {class:'btn', onclick:renderZaino}, icon('zaino'), 'Zaino · 背包'), h('button', {class:'btn', onclick:renderAlbum}, icon('book'), 'Album · 猫猫相册')));
 }
 function canBuyEgg(){ return !P.egg && P.pets.length < FOLL_ORDER.length; }
 
@@ -2261,7 +2341,7 @@ function renderBuild(ctx, it, done){
     if (ok) fb.replaceChildren(feedback(true, phrase(PRAISE), [h('p', {class:'fb-line'}, wordEl(w), glossText(w) ? ` · ${glossText(w)}` : '')], () => done(true), {auto:1700}));
     else fb.replaceChildren(feedback(false, phrase(OOPS), [
       h('p', {class:'fb-line'}, '这个词是 ', wordEl(w), '。你拼的是 ', h('b', {}, built), '。'),
-      h('div', {class:'compare'}, compareBtn(w, p, true), compareBtn(glossOf(built) ? built : '~' + built, p, false))], () => done(false)));
+      h('div', {class:'compare'}, compareBtn(w, p, true), glossOf(built) ? compareBtn(built, p, false) : h('span', {class:'cmp'}, h('span', {}, wordEl(built, {dots:false, plain:true}), h('small', {}, '你拼的 · 这样拼不是一个词'))))], () => done(false)));
   }
   ctx.body.replaceChildren(stepHead(ctx.kicker, 'Costruisci · 拼', '先听，再按顺序点音节。点一下格子可以把音节拿回来。'),
     pl.el, slotWrap, h('div', {class:'tiles'}, tileEls), h('div', {class:'actionrow'}, check), fb);
@@ -2579,6 +2659,7 @@ function renderSettings(){
     h('h1', {class:'page-title'}, '设置和语音'),
     h('h2', {class:'section-title'}, '这台设备上的意大利语语音'),
     h('p', {class:'muted', style:'margin:0'}, '听多种声音，耳朵练得更快。听力练习会轮流使用这里打开的每一个语音。'),
+    h('p', {class:'muted', style:'margin:0;font-size:.85rem'}, '发音是设备语音读的，不是录音。如果某个词读得不对，先用"试听"比较一下，只留下读得最准的那个（Chrome 里通常是 Google italiano；Edge 里是 Microsoft Elsa / Diego Online (Natural)）；Windows 的"设置 › 时间和语言 › 语音"里可以添加意大利语语音。'),
     h('div', {class:'list'}, voiceRows),
     h('h2', {class:'section-title'}, '听力'),
     h('div', {class:'list'},
@@ -2639,7 +2720,7 @@ Compagno.mount();
 renderHome();
 welcomeBack();
 initSync();
-window.__suoni = { get P(){ return P; }, set P(v){ P = normalize(v); save(); }, save, track, ensureDaily, earn, renderHome, renderShop, renderQuests, renderAlbum, renderHatch, activePet, bumpStreak, today, addDays, FOLLETTI, ECON, LEVELS, startLesson, Compagno, PXP, POSE_T, IDLE_GAP, poseGrid, pose:(n, ms) => Compagno.pose(n, ms), get S(){ return S; }, renderSettings };
+window.__suoni = { get P(){ return P; }, set P(v){ P = normalize(v); save(); }, save, track, ensureDaily, earn, renderHome, renderShop, renderQuests, renderAlbum, renderHatch, activePet, bumpStreak, today, addDays, FOLLETTI, ECON, LEVELS, startLesson, Compagno, PXP, POSE_T, IDLE_GAP, poseGrid, pose:(n, ms) => Compagno.pose(n, ms), get S(){ return S; }, renderSettings, renderZaino };
 })();
 </script>
 
